@@ -15,9 +15,18 @@ One file, no build step: HTML, CSS and JavaScript in `index.html`, with mammoth.
 1. **Your fit.** Every requirement in the job post, must-haves first, each with a quote from your CV. Code checks every quote is really in your CV, then scores it (must 2 points, nice 1) and gives a verdict.
 2. **What your CV leaves out.** Up to three questions about the gaps. Only your true answers are used.
 3. **Review and approve.** Before and proposed CV side by side, editable, with a list of changes. Nothing is saved until you tick "every line is true" and approve.
-4. **Your approved CV.** Before and after scores, rounds, and an honesty check that flags every name and number not in your CV or your answers. Download as Word or LaTeX once every flag is resolved.
+4. **Your approved CV.** Before and after scores, versions, and an honesty check that flags every name and number not in your CV or your answers. Export unlocks once every flag is resolved.
+5. **Cover letter.** Written from the approved CV and your answers, then honesty-checked the same way.
 
-Applications are saved in the browser and listed on Home and Applications.
+Around that:
+
+- **Editor.** Edit one section at a time with the AI (code keeps every other section as it was), Compare any two versions and restore one, and Code shows the LaTeX with Copy, Download and Open in Overleaf.
+- **Export.** PDF (through the print window), Word, LaTeX or plain text, in four templates (Classic, Modern, Compact, ATS plain), A4 or Letter.
+- **Applications.** Status from Checked to Offer, notes, filters.
+- **Resumes.** A master resume (.docx, .pdf or .txt) that fills every new application, and every tailored version.
+- **Settings.** Gemini key and model, writing tone, locked sections (the AI is told to leave them, and code puts them back if it does not), default template and page size.
+
+Everything is saved in your browser only.
 
 ## Design
 

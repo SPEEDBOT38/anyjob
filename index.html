@@ -44,6 +44,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .rail-foot b{display:block;font-size:15px}
 main{padding:40px 48px 64px;min-width:0}
 .wrap{max-width:var(--measure);margin:0 auto}
+.wrap.wide{max-width:1400px}
 
 /* type */
 .title{font-size:clamp(30px,4vw,44px);margin-bottom:8px}
@@ -61,8 +62,9 @@ main{padding:40px 48px 64px;min-width:0}
 .step h2{font-size:clamp(20px,2.4vw,26px)}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.between{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
 
-/* controls: eight states via base, hover, focus-visible, active, disabled, busy */
+/* controls */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;border:2px solid var(--color-ink);background:transparent;color:var(--color-ink);font-weight:800;font-size:15px;cursor:pointer;text-decoration:none;transition:background-color .12s,color .12s}
 .btn:hover{background:var(--color-paper-2)}
 .btn:active{transform:translateY(1px)}
@@ -80,15 +82,19 @@ main{padding:40px 48px 64px;min-width:0}
 .spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .9s linear infinite;flex:none}
 @keyframes sp{to{transform:rotate(360deg)}}
 textarea,input[type=text],input[type=password],select{width:100%;padding:12px 14px;border:2px solid var(--color-ink);background:var(--color-paper-3);border-radius:0}
+select.inline{width:auto;padding:8px 12px}
 textarea{min-height:220px;resize:vertical;line-height:1.5;font-size:14px}
 input[type=file]{width:100%;font-size:14px}
 input[type=file]::file-selector-button{font:inherit;font-weight:800;border:2px solid var(--color-ink);background:var(--color-paper-3);padding:8px 14px;margin-right:12px;cursor:pointer}
 .check{display:flex;gap:12px;align-items:flex-start;margin:16px 0;font-size:14px}
 .check input{width:22px;height:22px;accent-color:var(--color-cobalt);flex:none;margin:0}
 .seg{display:inline-flex;flex-wrap:wrap}
-.seg button{min-height:40px;padding:6px 16px;border:2px solid var(--color-ink);background:transparent;cursor:pointer;font-weight:500;margin-left:-2px}
-.seg button:first-child{margin-left:0}
-.seg button[aria-pressed=true]{background:var(--color-ink);color:var(--color-white);font-weight:800}
+.seg button,.seg a{min-height:40px;padding:6px 16px;border:2px solid var(--color-ink);background:transparent;cursor:pointer;font-weight:500;margin-left:-2px;text-decoration:none;display:inline-flex;align-items:center}
+.seg>:first-child{margin-left:0}
+.seg [aria-pressed=true],.seg [aria-current=page]{background:var(--color-ink);color:var(--color-white);font-weight:800}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{border:2px solid var(--color-ink);background:var(--color-paper-3);padding:4px 10px;font-size:13px;cursor:pointer}
+.chip:hover{background:var(--color-amber-soft)}
 
 /* banners */
 .banner{display:flex;gap:14px;align-items:flex-start;border:2px solid var(--color-ink);padding:12px 14px;margin-top:14px;font-size:14px}
@@ -126,7 +132,7 @@ pre.tex{margin:0;font:800 14px/1.15 var(--font-mono);white-space:pre;color:inher
 .sign.s3{background:var(--color-paper-3);color:var(--color-ink)}.sign.s3 .n{background:var(--color-ink);color:var(--color-amber)}
 .sign:hover{outline:2px solid var(--color-ink);outline-offset:2px}
 .home2{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr);gap:20px}
-.list a.item,.list .item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-ink-rule);text-decoration:none}
+.list .item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-ink-rule);text-decoration:none}
 .list .item:last-child{border-bottom:0}
 .fig{font-size:34px;font-weight:800;color:var(--color-amber);min-width:2.2ch}
 .item strong{display:block;overflow-wrap:anywhere}
@@ -134,6 +140,10 @@ pre.tex{margin:0;font:800 14px/1.15 var(--font-mono);white-space:pre;color:inher
 .needs strong{display:block}
 .empty{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 .empty pre.tex{font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:2px solid var(--color-ink);background:var(--color-paper-3);margin-top:20px}
+.stats div{padding:18px 20px}
+.stats div+div{border-left:1px solid var(--color-rule)}
+.stats b{display:block;font-size:44px;line-height:1}
 
 /* fit */
 .fit{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
@@ -151,7 +161,7 @@ pre.tex{margin:0;font:800 14px/1.15 var(--font-mono);white-space:pre;color:inher
 .t-yes{background:var(--color-co-soft);border-color:var(--color-cobalt);color:var(--color-cobalt)}
 .t-partial{background:var(--color-amber);border-color:var(--color-amber)}
 .t-no{background:transparent}
-.ev{color:var(--color-ink-2);font-style:normal}
+.ev{color:var(--color-ink-2)}
 .nf{color:var(--color-red);font-weight:800;font-size:13px}
 .q{margin-top:14px}
 .q label{display:block;font-size:14px;margin-bottom:6px}
@@ -159,6 +169,7 @@ pre.tex{margin:0;font:800 14px/1.15 var(--font-mono);white-space:pre;color:inher
 /* review */
 .mdedit,pre.box{width:100%;font:13px/1.6 var(--font-mono);white-space:pre-wrap;border:2px solid var(--color-ink);padding:14px;background:var(--color-paper-3);max-height:520px;overflow:auto;margin:0;min-height:420px}
 pre.box{background:var(--color-paper-2);color:var(--color-ink-2)}
+pre.box.short{min-height:0;max-height:260px}
 .dl{padding:8px 12px;margin:6px 0;font-size:13px;overflow-wrap:anywhere}
 .dl.add{background:var(--color-amber-soft)}
 .dl.del{background:var(--color-paper-2);color:var(--color-mute);text-decoration:line-through}
@@ -172,22 +183,53 @@ pre.box{background:var(--color-paper-2);color:var(--color-ink-2)}
 .rd{border:2px solid var(--color-ink);padding:4px 10px;font-size:13px;background:var(--color-paper-3)}
 .flag{background:var(--color-amber-soft);border:2px solid var(--color-ink);padding:12px 14px;margin:10px 0;font-size:14px;overflow-wrap:anywhere}
 .flag .row{margin-top:10px}
-.cvout{background:var(--color-paper-3);border:2px solid var(--color-ink);padding:28px;margin:16px 0}
-.cvout h2{font-size:28px}
-.cvout h3{font-size:14px;margin:20px 0 6px;padding-bottom:4px;border-bottom:2px solid var(--color-ink)}
-.cvout .it{font-weight:800;margin-top:10px}.cvout .meta{color:var(--color-mute);font-size:13px}
-.cvout ul{margin:4px 0;padding-left:20px}.cvout li,.cvout p{overflow-wrap:anywhere}
 
-/* apps */
-.apps .item{grid-template-columns:auto minmax(0,1fr) auto auto}
+/* editor */
+.ed-grid{display:grid;grid-template-columns:220px minmax(0,1fr) minmax(0,360px);gap:20px;align-items:start}
+.ed-rail{background:var(--color-cobalt);color:var(--color-white);border:2px solid var(--color-ink);padding:12px}
+.ed-rail h3{font-size:13px;font-weight:500;opacity:.85;margin:6px 4px 8px;letter-spacing:0}
+.ed-rail button{display:block;width:100%;text-align:left;background:transparent;border:2px solid transparent;color:var(--color-white);padding:8px 10px;cursor:pointer;font-size:14px;overflow-wrap:anywhere}
+.ed-rail button:hover{border-color:var(--color-line)}
+.ed-rail button[aria-pressed=true]{background:var(--color-white);color:var(--color-cobalt);font-weight:800}
+.ed-rail .lock{font-size:12px;opacity:.8}
+.ed-rail select{margin-top:4px;padding:8px;border-color:var(--color-white);background:var(--color-deep);color:var(--color-white)}
+.ed-panel{position:sticky;top:20px}
+.cv [data-sec]{outline:2px solid transparent;outline-offset:4px}
+.cv [data-sec].on{outline-color:var(--color-amber);background:var(--color-amber-soft)}
+.panes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.codebox{min-height:520px;font:13px/1.55 var(--font-mono);white-space:pre;overflow:auto;background:var(--color-ink);color:var(--color-white);border-color:var(--color-ink)}
+
+/* templates and library */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.card{background:var(--color-paper-3);border:2px solid var(--color-ink);display:flex;flex-direction:column}
+.card .thumb{background:var(--color-paper-2);padding:16px;border-bottom:2px solid var(--color-ink);height:300px;overflow:hidden}
+.card.on .thumb{background:var(--color-co-soft)}
+.card .body{padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card .body .row{margin-top:auto}
+
+/* export dialog */
+dialog{border:2px solid var(--color-ink);padding:0;max-width:min(760px,calc(100vw - 24px));width:100%;background:var(--color-paper-3);color:var(--color-ink)}
+dialog::backdrop{background:#0E121B99}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:2px solid var(--color-ink)}
+.dlg-body{padding:20px 24px}
+.fmts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.fmts label{border:2px solid var(--color-ink);padding:12px;cursor:pointer;display:block}
+.fmts input{position:absolute;opacity:0}
+.fmts label:has(input:checked){background:var(--color-ink);color:var(--color-white)}
+.fmts label:has(input:focus-visible){outline:3px solid var(--color-amber);outline-offset:2px}
+.fmts b{display:block;font-size:17px}
+.fmts span{font-size:12px;opacity:.85}
 
 /* settings */
 .set{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 32px;align-items:start;padding:20px 0;border-bottom:1px solid var(--color-rule)}
 .set:last-child{border-bottom:0}
+.locks label{display:flex;gap:10px;align-items:center;font-size:14px;margin-bottom:8px}
+.locks input{width:20px;height:20px;accent-color:var(--color-cobalt)}
 
 footer{color:var(--color-mute);font-size:13px;margin-top:40px}
 
 /* responsive */
+@media (max-width:1200px){.ed-grid{grid-template-columns:200px minmax(0,1fr)}.ed-panel{grid-column:1/-1;position:static}}
 @media (max-width:1100px){.hero{grid-template-columns:minmax(0,1fr)}.hero .tex-host{justify-content:flex-start}.home2{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:960px){
   .shell{grid-template-columns:minmax(0,1fr)}
@@ -198,9 +240,12 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
   .rail-foot{display:none}
   main{padding:24px 20px 48px}
   .signs{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats div:nth-child(3){border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--color-rule)}
+  .ed-grid{grid-template-columns:minmax(0,1fr)}
+  .ed-rail .secs{display:flex;flex-wrap:wrap;gap:4px}.ed-rail .secs button{width:auto}
 }
 @media (max-width:760px){
-  .grid2,.set{grid-template-columns:minmax(0,1fr)}
+  .grid2,.set,.panes{grid-template-columns:minmax(0,1fr)}
   .hero{padding:28px 20px}
   .facts{grid-template-columns:minmax(0,1fr)}.facts p+p{border-left:0;border-top:1px solid var(--color-line)}
   .fit{grid-template-columns:minmax(0,1fr)}
@@ -213,10 +258,26 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
   .apps .item{grid-template-columns:auto minmax(0,1fr)}
   .apps .item .row{grid-column:1/-1}
   .plate,.board{padding:18px}
-  .cvout{padding:18px}
   .sign .n{width:64px;height:64px;font-size:34px}
+  .fmts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats b{font-size:34px}
 }
 @media (prefers-reduced-motion:reduce){.spin{animation:none;border-right-color:currentColor;opacity:.6}.btn{transition:none}.btn:active{transform:none}}
+</style>
+<style id="cvcss">
+/* The resume itself, in four templates. Shared by the preview and the PDF print window. */
+:root{--cv-ink:#0E121B;--cv-mute:#5B6271;--cv-rule:#0E121B;--cv-accent:#2F5BE7;--cv-paper:#FFFFFF;--cv-serif:Georgia,"Times New Roman",serif;--cv-sans:Arial,"Helvetica Neue",Helvetica,sans-serif}
+.cv{background:var(--cv-paper);color:var(--cv-ink);font:15px/1.45 var(--cv-serif);padding:2.2em 2.4em;border:2px solid var(--cv-ink);overflow-wrap:anywhere}
+.cv h2{font-size:1.9em;margin:0;letter-spacing:-0.01em;font-weight:700}
+.cv h3{font-size:.95em;margin:1.2em 0 .4em;padding-bottom:.25em;border-bottom:1.5px solid var(--cv-rule);font-weight:700}
+.cv p{margin:.2em 0}.cv ul{margin:.2em 0;padding-left:1.3em}.cv li{margin:.1em 0}
+.cv .meta{color:var(--cv-mute);font-size:.85em}
+.cv .it{display:flex;justify-content:space-between;gap:1em;font-weight:700;margin-top:.6em}
+.cv .it span{font-weight:400;color:var(--cv-mute);font-size:.85em;white-space:nowrap}
+.cv.tpl-modern{font-family:var(--cv-sans)}.cv.tpl-modern h2{color:var(--cv-accent)}.cv.tpl-modern h3{color:var(--cv-accent);border-bottom:0;font-size:1em}
+.cv.tpl-compact{font:13px/1.32 var(--cv-sans);padding:1.6em 1.8em}.cv.tpl-compact h3{margin-top:.8em}
+.cv.tpl-ats{font-family:var(--cv-sans)}.cv.tpl-ats h3{border-bottom:0;font-size:1em}.cv.tpl-ats .it{display:block}.cv.tpl-ats .it span{display:block;white-space:normal}
+.cv.mini{font-size:6.5px;padding:1.6em;border-width:1px;pointer-events:none}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.13.0/mammoth.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
@@ -225,16 +286,18 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
 <a class="sr" href="#main">Skip to content</a>
 <div class="shell">
 <header class="rail">
-  <div class="brand"><a href="#/home">AnyJob</a><span class="ver" id="ver">v1.0</span></div>
+  <div class="brand"><a href="#/home">AnyJob</a><span class="ver" id="ver">v2.0</span></div>
   <nav class="nav" aria-label="Main">
     <a href="#/home" data-nav="home">Home</a>
     <a href="#/new" data-nav="new">New application</a>
     <a href="#/apps" data-nav="apps">Applications <span class="count" id="appCount">0</span></a>
+    <a href="#/resumes" data-nav="resumes">Resumes</a>
+    <a href="#/templates" data-nav="templates">Templates</a>
     <a href="#/settings" data-nav="settings">Settings</a>
   </nav>
   <div class="rail-foot"><span id="keyState">No API key yet</span><b id="modelState"></b></div>
 </header>
-<main id="main"><div class="wrap">
+<main id="main"><div class="wrap" id="wrap">
 
 <!-- Welcome -->
 <section data-view="welcome" class="hidden">
@@ -246,7 +309,7 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
     </div>
     <div class="tex-host"><pre class="tex" data-tex="loop" aria-label="Tex, a resume page with a face, rewriting one of its lines"></pre></div>
   </div>
-  <div class="facts"><p>Reads .docx or pasted text</p><p>Every edit waits for your yes</p><p>Nothing invented, ever</p></div>
+  <div class="facts"><p>Reads .docx, .pdf or pasted text</p><p>Every edit waits for your yes</p><p>Nothing invented, ever</p></div>
 </section>
 
 <!-- Home -->
@@ -255,16 +318,19 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
   <p class="lede">Pick up where you left off.</p>
   <div class="signs">
     <a class="sign s1" href="#/new"><span class="n">1</span><span><strong>New application</strong><span>Paste a job, check the fit</span></span></a>
-    <button class="sign s2" id="homeUpload" type="button"><span class="n">2</span><span><strong>Upload a .docx</strong><span>We read the text for you</span></span></button>
+    <a class="sign s2" href="#/resumes"><span class="n">2</span><span><strong>Master resume</strong><span id="homeMaster">Upload once, reuse for every job</span></span></a>
     <a class="sign s3" href="#/settings"><span class="n">3</span><span><strong>Gemini key</strong><span id="homeKey">Add it once, kept in this browser</span></span></a>
   </div>
   <div id="homeEmpty" class="plate empty hidden">
     <pre class="tex" data-tex="sleepy" aria-hidden="true"></pre>
     <div><h2 style="font-size:24px;margin-bottom:8px">No applications yet</h2><p class="hint" style="margin-bottom:16px">Paste a job post and your CV. Tex reads both and tells you whether to apply.</p><a class="btn primary" href="#/new">New application</a></div>
   </div>
-  <div id="homeFull" class="home2">
-    <div class="board"><h2 style="font-size:20px;margin-bottom:6px">Continue</h2><div class="list" id="homeList"></div></div>
-    <div><h2 style="font-size:20px;margin-bottom:12px">Needs you</h2><div id="homeNeeds"></div></div>
+  <div id="homeFull">
+    <div class="home2">
+      <div class="board"><h2 style="font-size:20px;margin-bottom:6px">Continue</h2><div class="list" id="homeList"></div></div>
+      <div><h2 style="font-size:20px;margin-bottom:12px">Needs you</h2><div id="homeNeeds"></div></div>
+    </div>
+    <div class="stats" id="homeStats"></div>
   </div>
 </section>
 
@@ -274,8 +340,8 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
   <p class="lede">Your CV and one job post. Nothing leaves this browser except the call to Gemini.</p>
   <div class="plate section">
     <div class="step"><b>1</b><h2>Your CV and one job</h2></div>
-    <label class="label" for="file" style="margin-top:0">Upload your CV (.docx)</label>
-    <input type="file" id="file" accept=".docx">
+    <label class="label" for="file" style="margin-top:0">Upload your CV (.docx, .pdf or .txt)</label>
+    <input type="file" id="file" accept=".docx,.pdf,.txt,.md,.tex">
     <div id="fileMsg"></div>
     <div class="grid2">
       <div><label class="label" for="cv">Your CV text</label><textarea id="cv" placeholder="Paste your CV text here"></textarea></div>
@@ -290,8 +356,10 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
 <!-- One application -->
 <section data-view="app" class="hidden">
   <p class="hint"><a href="#/apps">Applications</a></p>
-  <h1 class="title" id="appTitle"></h1>
-  <p class="lede" id="appSub"></p>
+  <div class="between" style="margin-bottom:24px">
+    <div style="min-width:0"><h1 class="title" id="appTitle"></h1><p class="hint" id="appSub"></p></div>
+    <div class="row"><label class="sr" for="appStatus">Status</label><select class="inline" id="appStatus"></select><a class="btn ink hidden" id="openEditor" href="#">Open the editor</a></div>
+  </div>
 
   <div class="section" id="res1">
     <div class="step"><b>1</b><h2>Your fit</h2></div>
@@ -330,19 +398,117 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
     <div class="scores"><div><span class="hint">Before</span><b id="sBefore"></b></div><div><span class="hint">After</span><b id="sAfter"></b></div></div>
     <span class="hint">Rounds</span><div class="rounds" id="rounds"></div>
     <div id="flags"></div>
-    <div class="cvout" id="cvOut"></div>
-    <div class="row"><button class="btn primary" id="suggestBtn" type="button">Suggest improvements</button><button class="btn amber" id="wordBtn" type="button">Download as Word</button><button class="btn" id="texBtn" type="button">Download LaTeX</button></div>
+    <div id="cvOut" style="margin:16px 0"></div>
+    <div class="row"><button class="btn primary" id="suggestBtn" type="button">Suggest improvements</button><a class="btn ink" id="editBtn" href="#">Open the editor</a><button class="btn amber" id="exportBtn" type="button">Export</button></div>
     <div id="work4"></div>
     <div id="msg3"></div>
+  </div>
+
+  <div class="plate section hidden" id="coverSec">
+    <div class="step"><b>5</b><h2>Cover letter</h2></div>
+    <p class="hint">Written from your approved CV and your answers only, then checked like the CV.</p>
+    <div class="row" style="margin-top:14px"><button class="btn primary" id="coverBtn" type="button">Write a cover letter</button></div>
+    <div id="work5"></div>
+    <div id="coverBox" class="hidden">
+      <label class="label" for="coverText">Your cover letter (edit freely)</label>
+      <textarea id="coverText" style="min-height:300px"></textarea>
+      <div id="coverFlags"></div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="coverCheck" type="button">Check again</button><button class="btn amber" id="coverWord" type="button">Download as Word</button><button class="btn" id="coverCopy" type="button">Copy</button></div>
+    </div>
+    <div id="msg5"></div>
+  </div>
+
+  <div class="plate section">
+    <h2 style="font-size:20px;margin-bottom:10px"><label for="notes">Notes</label></h2>
+    <textarea id="notes" style="min-height:100px" placeholder="Recruiter name, interview dates, what to prepare. Saved as you type."></textarea>
+  </div>
+</section>
+
+<!-- Editor -->
+<section data-view="edit" class="hidden">
+  <p class="hint"><a id="edBack" href="#">Back to the application</a></p>
+  <div class="between" style="margin-bottom:20px">
+    <h1 class="title" id="edTitle" style="min-width:0"></h1>
+    <div class="row"><nav class="seg" id="edModes" aria-label="Editor mode"><a data-mode="edit" href="#">Edit</a><a data-mode="compare" href="#">Compare</a><a data-mode="code" href="#">Code</a></nav><button class="btn amber" id="edExport" type="button">Export</button></div>
+  </div>
+
+  <div id="modeEdit" class="ed-grid">
+    <div class="ed-rail">
+      <h3>Sections</h3><div class="secs" id="edSecs"></div>
+      <h3 style="margin-top:16px"><label for="edTpl">Template</label></h3>
+      <select id="edTpl"></select>
+      <button type="button" id="edText" style="margin-top:12px">Edit the whole CV as text</button>
+    </div>
+    <div id="edPage"></div>
+    <div class="plate ed-panel">
+      <h2 id="edSecName" style="font-size:22px"></h2>
+      <p class="hint" id="edLock"></p>
+      <pre class="box short" id="edSecNow" style="margin-top:12px"></pre>
+      <label class="label" for="edInstr">What should change?</label>
+      <div class="chips" id="edChips"><button class="chip" type="button">Make it shorter</button><button class="chip" type="button">Start each line with a strong verb</button><button class="chip" type="button">Use the job post's words where true</button><button class="chip" type="button">Fix grammar only</button></div>
+      <textarea id="edInstr" style="min-height:80px"></textarea>
+      <div class="row" style="margin-top:12px"><button class="btn primary" id="edPropose" type="button">Propose a change</button></div>
+      <div id="work6"></div>
+      <div id="edProp" class="hidden">
+        <span class="label">Proposed</span><pre class="box short" id="edAfter"></pre>
+        <div class="row" style="margin-top:12px"><button class="btn primary" id="edAccept" type="button">Accept</button><button class="btn" id="edSkip" type="button">Skip</button></div>
+      </div>
+      <div id="msg6"></div>
+    </div>
+  </div>
+
+  <div id="modeCompare" class="hidden">
+    <div class="grid2" style="margin-bottom:16px">
+      <div><label class="label" for="cmpA" style="margin-top:0">Left</label><select id="cmpA"></select></div>
+      <div><label class="label" for="cmpB" style="margin-top:0">Right</label><select id="cmpB"></select></div>
+    </div>
+    <div class="panes"><div id="cmpLeft"></div><div id="cmpRight"></div></div>
+    <span class="label">Changes from left to right</span><div id="cmpDiff"></div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="cmpRestore" type="button">Make the right side current</button></div>
+    <div id="work7"></div><div id="msg7"></div>
+  </div>
+
+  <div id="modeCode" class="hidden">
+    <div class="between" style="margin-bottom:12px"><p class="hint" id="codeInfo"></p><div class="row"><label class="sr" for="codeTpl">Template</label><select class="inline" id="codeTpl"></select></div></div>
+    <label class="sr" for="codeTex">LaTeX source</label><textarea class="codebox" id="codeTex" readonly spellcheck="false"></textarea>
+    <div class="row" style="margin-top:14px"><button class="btn" id="codeCopy" type="button">Copy</button><button class="btn" id="codeDl" type="button">Download .tex</button><button class="btn primary" id="codeOverleaf" type="button">Open in Overleaf</button></div>
+    <p class="hint" style="margin-top:10px">The LaTeX is generated from your approved CV by plain code. To change it, edit the CV, then copy it again.</p>
+    <form id="olForm" action="https://www.overleaf.com/docs" method="post" target="_blank" class="hidden"><input type="hidden" name="snip" id="olSnip"><input type="hidden" name="snip_name" value="resume.tex"></form>
+    <div id="msg8"></div>
   </div>
 </section>
 
 <!-- Applications -->
 <section data-view="apps" class="hidden">
   <h1 class="title">Applications.</h1>
-  <p class="lede">Every job you checked, with its score and its CV. Kept in this browser.</p>
-  <div class="seg" role="group" aria-label="Filter" id="appFilter" style="margin-bottom:20px"><button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="apply" aria-pressed="false">Apply</button><button type="button" data-f="partial" aria-pressed="false">Partial</button><button type="button" data-f="skip" aria-pressed="false">Skip</button></div>
+  <p class="lede">Every job you checked, with its score, status and CV. Kept in this browser.</p>
+  <div class="seg" role="group" aria-label="Filter by status" id="appFilter" style="margin-bottom:20px"></div>
   <div class="board list apps" id="appList"></div>
+</section>
+
+<!-- Resumes -->
+<section data-view="resumes" class="hidden">
+  <h1 class="title">Resumes.</h1>
+  <p class="lede">One master resume, many tailored versions.</p>
+  <div class="plate section">
+    <h2 style="font-size:22px;margin-bottom:6px">Master resume</h2>
+    <p class="hint" id="masterInfo">Fills the CV box for every new application.</p>
+    <label class="label" for="masterFile">Upload (.docx, .pdf or .txt)</label>
+    <input type="file" id="masterFile" accept=".docx,.pdf,.txt,.md,.tex">
+    <label class="label" for="masterText">Text</label>
+    <textarea id="masterText" placeholder="Paste or upload your full CV"></textarea>
+    <div class="row" style="margin-top:14px"><button class="btn primary" id="masterSave" type="button">Save master resume</button><a class="btn" href="#/new">Use it for a new application</a></div>
+    <div id="msgMaster"></div>
+  </div>
+  <h2 style="font-size:22px;margin-bottom:14px">Tailored versions</h2>
+  <div class="cards" id="cvGrid"></div>
+</section>
+
+<!-- Templates -->
+<section data-view="templates" class="hidden">
+  <h1 class="title">Templates.</h1>
+  <p class="lede" id="tplLede">Switching re-flows your content. Nothing is lost.</p>
+  <div class="cards" id="tplGrid"></div>
 </section>
 
 <!-- Settings -->
@@ -352,20 +518,47 @@ footer{color:var(--color-mute);font-size:13px;margin-top:40px}
   <div class="plate">
     <div class="set"><div><strong>Gemini API key</strong><p class="hint">Get one free at aistudio.google.com/apikey.</p></div><div><label class="sr" for="key">Gemini API key</label><input type="password" id="key" placeholder="Paste your key" autocomplete="off"></div></div>
     <div class="set"><div><strong>Model</strong><p class="hint">Hit a limit? Switch the model.</p></div><div><label class="sr" for="model">Model</label><select id="model"><option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (fast, default)</option><option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite</option><option value="gemini-3.8-flash">gemini-3.8-flash (smarter, slower)</option></select></div></div>
+    <div class="set"><div><strong>Writing tone</strong><p class="hint">How rewrites, edits and cover letters are phrased.</p></div><div class="seg" role="group" aria-label="Writing tone" id="toneSeg"><button type="button" data-v="concise">Concise</button><button type="button" data-v="balanced">Balanced</button><button type="button" data-v="bold">Bold</button></div></div>
+    <div class="set"><div><strong>Locked sections</strong><p class="hint">The AI is told not to touch these, and code puts them back if it does. Applies once you have an approved CV.</p></div><div class="locks" id="locks"></div></div>
+    <div class="set"><div><strong>Default template</strong><p class="hint">Used for new CVs and exports.</p></div><div><label class="sr" for="setTpl">Default template</label><select id="setTpl"></select></div></div>
+    <div class="set"><div><strong>Page size</strong><p class="hint">For PDF, Word and LaTeX.</p></div><div class="seg" role="group" aria-label="Page size" id="pageSeg"><button type="button" data-v="a4">A4</button><button type="button" data-v="letter">Letter</button></div></div>
     <div class="set"><div><strong>Truth guard</strong><p class="hint">Always on. The AI never adds a skill, tool, employer, number or achievement that is not in your CV or your own answers, and code checks every name and number it writes.</p></div><div><span class="tag t-must">On, cannot be turned off</span></div></div>
-    <div class="set"><div><strong>Your data</strong><p class="hint">Applications are saved in this browser only.</p></div><div><button class="btn" id="clearBtn" type="button">Delete all applications</button><div id="msgSet"></div></div></div>
+    <div class="set"><div><strong>Your data</strong><p class="hint">Applications and your master resume are saved in this browser only.</p></div><div><button class="btn" id="clearBtn" type="button">Delete all applications</button><div id="msgSet"></div></div></div>
   </div>
 </section>
 
 <footer>AI does the fuzzy jobs. Code does the exact jobs. You decide.</footer>
 </div></main>
 </div>
+
+<dialog id="exportDlg" aria-labelledby="expTitle">
+  <div class="dlg-head"><h2 id="expTitle" style="font-size:26px">Export</h2><button class="btn small" id="expClose" type="button">Close</button></div>
+  <div class="dlg-body">
+    <div class="fmts" role="radiogroup" aria-label="Format">
+      <label><input type="radio" name="fmt" value="pdf"><b>PDF</b><span>For applying</span></label>
+      <label><input type="radio" name="fmt" value="docx"><b>Word</b><span>Edit in Word</span></label>
+      <label><input type="radio" name="fmt" value="tex"><b>LaTeX</b><span>Source .tex</span></label>
+      <label><input type="radio" name="fmt" value="txt"><b>Plain text</b><span>For web forms</span></label>
+    </div>
+    <div class="grid2">
+      <div><label class="label" for="expName">File name</label><input type="text" id="expName"></div>
+      <div><label class="label" for="expTpl">Template</label><select id="expTpl"></select></div>
+    </div>
+    <span class="label">Page size</span><div class="seg" role="group" aria-label="Page size" id="expPage"><button type="button" data-v="a4">A4</button><button type="button" data-v="letter">Letter</button></div>
+    <label class="check"><input type="checkbox" id="expSent"><span>Mark this application as sent</span></label>
+    <p class="hint">PDF opens your browser's print window. Choose Save as PDF.</p>
+    <div class="row" style="margin-top:16px"><button class="btn primary" id="expGo" type="button">Download</button></div>
+    <div id="msgExp"></div>
+  </div>
+</dialog>
+
 <script>
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const show = (sel, on = true) => $(sel).classList.toggle('hidden', !on);
 const norm = s => String(s || '').toLowerCase().replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim();
+const clone = o => JSON.parse(JSON.stringify(o));
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- Tex, the mascot ---------- */
@@ -407,17 +600,36 @@ function busy(sel, on, label, host){
   else { b.innerHTML = b.dataset.label || b.innerHTML; b.disabled = false; if (host) $(host).innerHTML = ''; }
 }
 
-/* ---------- storage ---------- */
+/* ---------- storage and settings ---------- */
 const store = {get(k, d = ''){ try { return localStorage.getItem(k) ?? d; } catch(e){ return d; } }, set(k, v){ try { localStorage.setItem(k, v); } catch(e){} }};
+const readJSON = (k, d) => { try { return JSON.parse(store.get(k, '')) ?? d; } catch(e){ return d; } };
 const MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemini-3.8-flash'];
 $('#key').value = store.get('apn_key');
 $('#model').value = MODELS.includes(store.get('apn_model')) ? store.get('apn_model') : 'gemini-3.1-flash-lite';
 $('#key').addEventListener('input', () => { store.set('apn_key', $('#key').value.trim()); renderChrome(); });
 $('#model').addEventListener('change', () => { store.set('apn_model', $('#model').value); renderChrome(); });
-let apps = []; try { apps = JSON.parse(store.get('anyjob_apps', '[]')) || []; } catch(e){ apps = []; }
+const SET = Object.assign({tone: 'balanced', locked: [], template: 'classic', page: 'a4', exportFmt: 'pdf'}, readJSON('anyjob_settings', {}));
+const saveSet = () => store.set('anyjob_settings', JSON.stringify(SET));
+let apps = readJSON('anyjob_apps', []); if (!Array.isArray(apps)) apps = [];
+let master = readJSON('anyjob_master', {text: '', updated: 0}) || {text: '', updated: 0};
 const saveApps = () => { store.set('anyjob_apps', JSON.stringify(apps)); renderChrome(); };
 let state = null; // the application being worked on
 function saveState(){ if (!state) return; state.updated = Date.now(); const i = apps.findIndex(a => a.id === state.id); if (i >= 0) apps[i] = state; else apps.unshift(state); saveApps(); }
+
+const TEMPLATES = {classic: ['Classic', 'Serif, ruled headings. Safe everywhere.'], modern: ['Modern', 'Sans serif with a cobalt accent.'], compact: ['Compact', 'Tighter type to fit more on one page.'], ats: ['ATS plain', 'No rules or colour, for applicant tracking systems.']};
+const TONES = {concise: 'Writing style: short and plain. Cut every word that does not carry meaning.', balanced: 'Writing style: plain and direct. Short bullets that start with a verb.', bold: 'Writing style: confident and specific. Lead each bullet with the result, using only facts from the sources.'};
+const LOCKABLE = [['header', 'Header (name, headline, contact)'], ['summary', 'Summary'], ['skills', 'Skills'], ['experience', 'Experience'], ['education', 'Education']];
+const STATUSES = [['checked', 'Checked'], ['sent', 'Sent'], ['interview', 'Interview'], ['offer', 'Offer'], ['closed', 'Closed']];
+const statusName = k => (STATUSES.find(s => s[0] === k) || STATUSES[0])[1];
+const tplOptions = cur => Object.entries(TEMPLATES).map(([k, [n]]) => `<option value="${k}"${k === cur ? ' selected' : ''}>${n}</option>`).join('');
+const lockRule = () => SET.locked.length ? `Do not change these sections at all: ${SET.locked.map(k => LOCKABLE.find(l => l[0] === k)[1]).join(', ')}.` : '';
+function applyLocks(prev, next){
+  if (!prev) return next;
+  const L = new Set(SET.locked);
+  if (L.has('header')){ next.name = prev.name; next.headline = prev.headline; next.contact = [...prev.contact]; }
+  ['summary', 'skills', 'experience', 'education'].forEach(k => { if (L.has(k)) next[k] = clone(prev[k]); });
+  return next;
+}
 
 /* ---------- Gemini (AI does the fuzzy jobs) ---------- */
 async function askGemini(system, user){
@@ -479,6 +691,7 @@ function score(reqs){
   return max ? Math.round(pts / max * 100) : 0;
 }
 function verdict(s){ return s >= APPLY_AT ? {k: 'apply', t: 'Apply'} : s < SKIP_BELOW ? {k: 'skip', t: 'Skip'} : {k: 'partial', t: 'Partial fit'}; }
+const latest = a => a.cvNew ? a.after : a.before;
 
 async function runMatch(){
   msg('#msg1', '');
@@ -492,7 +705,7 @@ async function runMatch(){
     let reqs = out.requirements.map((r, i) => ({...r, id: 'r' + (i + 1)}));
     reqs = verify(reqs, cv);
     state = {id: 'a' + Date.now().toString(36), created: Date.now(), match: {role: out.role || '', company: out.company || '', reqs, cv, jd},
-      before: score(reqs), cvNew: null, flags: [], answers: [], rounds: [], facts: '', proposal: null, after: null};
+      before: score(reqs), cvNew: null, flags: [], answers: [], rounds: [], facts: '', proposal: null, after: null, status: 'checked', notes: '', template: SET.template, cover: null};
     saveState();
     $('#cv').value = ''; $('#jd').value = ''; $('#file').value = ''; msg('#fileMsg', '');
     location.hash = '#/app/' + state.id;
@@ -503,29 +716,56 @@ $('#matchBtn').addEventListener('click', runMatch);
 
 function renderMatch(){
   const m = state.match, v = verdict(state.before);
-  $('#appTitle').textContent = [m.role, m.company].filter(Boolean).join(', ') || 'Untitled application';
+  $('#appTitle').textContent = appName(state);
   $('#appSub').textContent = 'Checked ' + new Date(state.created).toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: 'numeric'});
+  $('#appStatus').innerHTML = STATUSES.map(([k, n]) => `<option value="${k}"${k === (state.status || 'checked') ? ' selected' : ''}>${n}</option>`).join('');
   $('#roleLine').textContent = [m.role, m.company].filter(Boolean).join(' at ');
   $('#score').textContent = state.before;
   $('#bar').style.width = state.before + '%';
   $('#verdict').className = 'verdict v-' + v.k; $('#verdict').textContent = v.t;
   $('#reqRows').innerHTML = m.reqs.map(r => `<div class="req" role="row"><span class="rq" role="cell">${esc(r.requirement)}</span><span role="cell"><span class="tag ${r.importance === 'must' ? 't-must' : ''}">${r.importance === 'must' ? 'Must' : 'Nice'}</span></span><span role="cell"><span class="tag t-${esc(r.match)}">${esc(r.match)}</span></span><span class="proof" role="cell">${r.notFound ? '<span class="nf">Not found in your CV</span>' : r.evidence ? `<span class="ev">"${esc(r.evidence)}"</span>` : '<span class="hint">None</span>'}</span></div>`).join('');
+  $('#notes').value = state.notes || '';
   renderGaps();
 }
+$('#appStatus').addEventListener('change', () => { state.status = $('#appStatus').value; saveState(); });
+let notesTimer = null;
+$('#notes').addEventListener('input', () => { clearTimeout(notesTimer); notesTimer = setTimeout(() => { state.notes = $('#notes').value; saveState(); }, 300); });
 
-/* ---------- Word upload ---------- */
-$('#file').addEventListener('change', async e => {
-  const f = e.target.files[0]; msg('#fileMsg', '');
-  if (!f) return;
-  if (!/\.docx$/i.test(f.name)) return msg('#fileMsg', 'This is not a .docx file. Save your CV as .docx from Word or Google Docs, or paste the text below.');
-  try {
-    const r = await mammoth.extractRawText({arrayBuffer: await f.arrayBuffer()});
-    const text = r.value.replace(/\n{3,}/g, '\n\n').trim();
-    if (text.length < 100) return msg('#fileMsg', 'We could read very little text from this file. Paste your CV text below instead.');
-    $('#cv').value = text;
-    msg('#fileMsg', `Read ${text.split(/\s+/).length} words from ${esc(f.name)}. Check the text below.`, 'info');
-  } catch(err){ msg('#fileMsg', 'Could not read this file. Paste your CV text below instead.'); }
+/* ---------- Reading files: Word, PDF, text ---------- */
+let pdfReady = null;
+const loadPdf = () => pdfReady ||= new Promise((ok, no) => {
+  const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  s.onload = () => { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; ok(); };
+  s.onerror = () => { pdfReady = null; no(new Error('load')); }; document.head.appendChild(s);
 });
+async function readFileText(f){
+  if (/\.docx$/i.test(f.name)) return (await mammoth.extractRawText({arrayBuffer: await f.arrayBuffer()})).value;
+  if (/\.pdf$/i.test(f.name)){
+    await loadPdf();
+    const pdf = await pdfjsLib.getDocument({data: new Uint8Array(await f.arrayBuffer())}).promise, out = [];
+    for (let p = 1; p <= pdf.numPages; p++){
+      const c = await (await pdf.getPage(p)).getTextContent(); let lastY = null, line = '';
+      c.items.forEach(it => { const y = Math.round(it.transform[5]); if (lastY !== null && Math.abs(y - lastY) > 2){ out.push(line); line = ''; } line += it.str; lastY = y; });
+      out.push(line, '');
+    }
+    return out.join('\n');
+  }
+  if (/\.(txt|md|tex)$/i.test(f.name)) return f.text();
+  throw new Error('type');
+}
+async function readInto(input, target, msgSel){
+  const f = input.files[0]; msg(msgSel, '');
+  if (!f) return;
+  if (!/\.(docx|pdf|txt|md|tex)$/i.test(f.name)) return msg(msgSel, 'This file type is not supported. Use .docx, .pdf or .txt, or paste the text below.');
+  try {
+    const text = (await readFileText(f)).replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+    if (text.length < 100) return msg(msgSel, /\.pdf$/i.test(f.name) ? 'We could read very little text from this PDF. If it is a scan, paste your CV text below instead.' : 'We could read very little text from this file. Paste your CV text below instead.');
+    $(target).value = text;
+    msg(msgSel, `Read ${text.split(/\s+/).length} words from ${esc(f.name)}. Check the text below.`, 'info');
+  } catch(err){ msg(msgSel, 'Could not read this file. Paste your CV text below instead.'); }
+}
+$('#file').addEventListener('change', e => readInto(e.target, '#cv', '#fileMsg'));
+$('#masterFile').addEventListener('change', e => readInto(e.target, '#masterText', '#msgMaster'));
 
 /* ---------- Gap questions ---------- */
 const MAX_QUESTIONS = 3;
@@ -540,12 +780,13 @@ function renderGaps(){
 /* ---------- Honest rewrite ---------- */
 const HONESTY = 'Never add a skill, tool, employer, number or achievement that is not in the CV or in the candidate\'s own answers. If something is not there, leave it out.';
 const CV_SHAPE = '{"name":"","headline":"","contact":[""],"summary":"","skills":[""],"experience":[{"title":"","org":"","dates":"","bullets":[""]}],"education":[{"title":"","org":"","dates":""}]}';
-const REWRITE_SYSTEM = `You rewrite a CV toward one job post.
+const REWRITE_SYSTEM = () => `You rewrite a CV toward one job post.
 ${HONESTY}
 Use the job's own words where they are true for this candidate. Put the most relevant experience first.
-Writing style: plain and direct. Short bullets that start with a verb.
+${TONES[SET.tone]}
 The summary is at most 3 lines.
 Put projects inside "experience" as items too.
+${lockRule()}
 Return JSON only in this shape: ${CV_SHAPE}`;
 const RESCORE_SYSTEM = `You judge a CV against a fixed list of requirements.
 For each requirement id, give match "yes", "partial" or "no", judged only from the CV, and evidence: an exact phrase copied character for character from the CV, or "".
@@ -564,7 +805,7 @@ function sanitizeCV(d){
 }
 function cvToText(d){
   const L = [d.name, d.headline, d.contact.join(' | '), '', 'SUMMARY', d.summary, '', 'SKILLS', d.skills.join(', '), '', 'EXPERIENCE'];
-  d.experience.forEach(e => { L.push([e.title, e.org, e.dates].filter(Boolean).join(' | ')); e.bullets.forEach(b => L.push(b)); L.push(''); });
+  d.experience.forEach(e => { L.push([e.title, e.org, e.dates].filter(Boolean).join(' | ')); e.bullets.forEach(b => L.push('- ' + b)); L.push(''); });
   L.push('EDUCATION'); d.education.forEach(e => L.push([e.title, e.org, e.dates].filter(Boolean).join(' | ')));
   return L.join('\n');
 }
@@ -572,10 +813,10 @@ const answersText = () => (state.answers || []).map(a => a.a).join('\n');
 const sourcesText = () => state.match.cv + '\n' + answersText() + '\n' + (state.facts || '');
 
 /* honesty check: numbers and capitalised names that are not in the CV or the answers */
-const COMMON = new Set('a an and the of for to in on at by with from as or i my me we our you your is are was were be been this that these those it its into over under up out per via led built ran wrote managed launched created designed improved increased reduced cut grew drove owned set made helped worked used found turned delivered analysed analyzed shared handled resolved interviewed tracked pulled summary skills experience education projects languages also both each every more most new not only than then very will can could should would'.split(' '));
+const COMMON = new Set('a an and the of for to in on at by with from as or i my me we our you your is are was were be been this that these those it its into over under up out per via led built ran wrote managed launched created designed improved increased reduced cut grew drove owned set made helped worked used found turned delivered analysed analyzed shared handled resolved interviewed tracked pulled summary skills experience education projects languages also both each every more most new not only than then very will can could should would dear hiring manager team regards sincerely thank thanks best kind warm'.split(' '));
 function badTerms(text, hay, skipFirst = true){
   const out = [];
-  String(text).split(/(?<=[.!?])\s+/).forEach(sent => {
+  String(text).split(/(?<=[.!?])\s+|\n+/).forEach(sent => {
     const words = sent.match(/[A-Za-z0-9][A-Za-z0-9+#.%&'/-]*/g) || [];
     words.forEach((w, i) => {
       const clean = w.replace(/[.,;:]+$/, '');
@@ -597,6 +838,7 @@ function honestyFlags(d){
   d.experience.forEach((e, i) => e.bullets.forEach((b, j) => check(e.title || e.org || 'Experience', b, ['experience', i, j])));
   return flags;
 }
+const addFacts = terms => { state.facts = [state.facts, terms.join(', ')].filter(Boolean).join('\n'); };
 function resolveFlag(i, action){
   const f = state.flags[i]; if (!f || f.done) return;
   if (action === 'remove'){
@@ -604,7 +846,7 @@ function resolveFlag(i, action){
     if (p[0] === 'headline' || p[0] === 'summary') d[p[0]] = '';
     else if (p[0] === 'skills') d.skills[p[1]] = null;
     else d.experience[p[1]].bullets[p[2]] = null;
-  }
+  } else addFacts(f.bad); // the candidate says it is true: it becomes one of their own answers
   f.done = true;
   if (state.flags.every(x => x.done)){
     const d = state.cvNew;
@@ -613,6 +855,7 @@ function resolveFlag(i, action){
   }
   saveState(); renderResult();
 }
+const flagsOpen = () => state.flags.some(f => !f.done);
 
 async function rescore(d){
   const m = state.match, text = cvToText(d);
@@ -620,6 +863,14 @@ async function rescore(d){
   const byId = {}; (Array.isArray(out.results) ? out.results : []).forEach(x => { byId[x.id] = x; });
   const reqs = m.reqs.map(r => ({...r, match: byId[r.id]?.match || 'no', evidence: byId[r.id]?.evidence || ''}));
   return score(verify(reqs, text));
+}
+// Every accepted CV goes through here: honesty check, score, a snapshot for Compare.
+async function commitCV(cv, label){
+  const after = await rescore(cv);
+  state.cvNew = cv; state.flags = honestyFlags(cv); state.after = after;
+  state.rounds.push({label, score: after, cv: clone(cv), at: Date.now()});
+  if (state.rounds.length > 12) state.rounds.shift();
+  saveState();
 }
 
 $('#rewriteBtn').addEventListener('click', async () => {
@@ -630,23 +881,27 @@ $('#rewriteBtn').addEventListener('click', async () => {
   busy('#rewriteBtn', true, 'Drafting your rewrite', '#work2');
   try {
     const user = `CV:\n"""${m.cv}"""\n\nJOB POST:\n"""${m.jd}"""\n\nREQUIREMENTS:\n${m.reqs.map(r => `- ${r.requirement} (${r.importance}, currently ${r.match})`).join('\n')}\n\nCANDIDATE'S OWN ANSWERS (true):\n${state.answers.map(x => `- ${x.q}: ${x.a}`).join('\n') || '- none'}`;
-    const cv = sanitizeCV(await askGemini(REWRITE_SYSTEM, user));
+    const cv = applyLocks(state.cvNew, sanitizeCV(await askGemini(REWRITE_SYSTEM(), user)));
     if (!cv.name && !cv.experience.length) throw new Error('The AI returned an empty CV. Click again.');
     openProposal(cv, {kind: 'text', text: m.cv}, state.rounds.length ? 'Fresh rewrite' : 'First rewrite');
   } catch(e){ msg('#msg2', e.message); }
   busy('#rewriteBtn', false, '', '#work2');
 });
 
-function cvHTML(d){
-  const sec = (t, inner) => inner ? `<h3>${t}</h3>${inner}` : '';
-  return `<h2>${esc(d.name)}</h2>${d.headline ? `<p>${esc(d.headline)}</p>` : ''}${d.contact.length ? `<p class="meta">${d.contact.map(esc).join(' | ')}</p>` : ''}` +
-    sec('Summary', d.summary ? `<p>${esc(d.summary)}</p>` : '') +
-    sec('Skills', d.skills.filter(Boolean).length ? `<p>${d.skills.filter(Boolean).map(esc).join(', ')}</p>` : '') +
-    sec('Experience', d.experience.map(e => `<div class="it">${esc([e.title, e.org].filter(Boolean).join(', '))}</div><div class="meta">${esc(e.dates)}</div><ul>${e.bullets.filter(Boolean).map(b => `<li>${esc(b)}</li>`).join('')}</ul>`).join('')) +
-    sec('Education', d.education.map(e => `<p><b>${esc(e.title)}</b>${e.org ? ', ' + esc(e.org) : ''}${e.dates ? ` <span class="meta">${esc(e.dates)}</span>` : ''}</p>`).join(''));
+/* ---------- The resume, in four templates ---------- */
+function cvHTML(d, tpl = 'classic', o = {}){
+  const sec = (t, inner, key) => inner ? `<div data-sec="${key}"><h3>${t}</h3>${inner}</div>` : '';
+  return `<article class="cv tpl-${tpl}${o.mini ? ' mini' : ''}"><div data-sec="header"><h2>${esc(d.name)}</h2>${d.headline ? `<p>${esc(d.headline)}</p>` : ''}${d.contact.length ? `<p class="meta">${d.contact.map(esc).join(' | ')}</p>` : ''}</div>` +
+    sec('Summary', d.summary ? `<p>${esc(d.summary)}</p>` : '', 'summary') +
+    sec('Skills', d.skills.filter(Boolean).length ? `<p>${d.skills.filter(Boolean).map(esc).join(', ')}</p>` : '', 'skills') +
+    (d.experience.length ? `<h3>Experience</h3>` + d.experience.map((e, i) => `<div data-sec="exp:${i}"><div class="it">${esc([e.title, e.org].filter(Boolean).join(', '))}<span>${esc(e.dates)}</span></div><ul>${e.bullets.filter(Boolean).map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`).join('') : '') +
+    sec('Education', d.education.map(e => `<div class="it">${esc([e.title, e.org].filter(Boolean).join(', '))}<span>${esc(e.dates)}</span></div>`).join(''), 'education') + '</article>';
 }
 function renderResult(){
-  if (!state.cvNew){ show('#res2', false); return; }
+  const has = !!state.cvNew;
+  show('#res2', has); show('#coverSec', has); show('#openEditor', has);
+  if (!has) return;
+  $('#openEditor').href = $('#editBtn').href = `#/edit/${state.id}/edit`;
   $('#sBefore').textContent = state.before;
   const d = state.after - state.before;
   $('#sAfter').innerHTML = `${state.after} <span class="hint" style="font-size:16px">(${d >= 0 ? '+' : ''}${d})</span>`;
@@ -655,10 +910,10 @@ function renderResult(){
     state.flags.map((f, i) => f.done ? '' : `<div class="flag"><b>${esc(f.where)}:</b> ${esc(f.text)}<br><span class="hint">Not found: ${f.bad.map(esc).join(', ')}</span><div class="row"><button class="btn small" type="button" data-rm="${i}">Remove</button><button class="btn small" type="button" data-keep="${i}">Keep (it is true)</button></div></div>`).join('')
     : '<div class="banner info" role="status"><pre class="tex" data-tex="happy" aria-hidden="true"></pre><div><b>Honesty check passed.</b><br>Every name and number is in your CV or your answers.</div></div>';
   paintTex($('#flags'));
-  $('#cvOut').innerHTML = cvHTML(state.cvNew);
+  $('#cvOut').innerHTML = cvHTML(state.cvNew, state.template || SET.template);
   $('#rounds').innerHTML = state.rounds.map(r => `<span class="rd">${esc(r.label)}: <b>${r.score}</b></span>`).join('');
-  ['#wordBtn', '#texBtn'].forEach(b => { $(b).disabled = open.length > 0; $(b).title = open.length ? 'Resolve every honesty flag first' : ''; });
-  show('#res2');
+  $('#exportBtn').disabled = open.length > 0; $('#exportBtn').title = open.length ? 'Resolve every honesty flag first' : '';
+  renderCover();
 }
 $('#flags').addEventListener('click', e => {
   const rm = e.target.closest('[data-rm]'), keep = e.target.closest('[data-keep]');
@@ -667,15 +922,17 @@ $('#flags').addEventListener('click', e => {
 });
 
 /* ---------- Review and approve: nothing is saved without you ---------- */
-const MAX_ROUNDS = 5;
-const REVISE_SYSTEM = `You revise a CV that the candidate is reviewing.
+const REVISE_SYSTEM = () => `You revise a CV that the candidate is reviewing.
 ${HONESTY}
 Apply the candidate's instruction exactly. Change nothing else.
+${TONES[SET.tone]}
+${lockRule()}
 Return JSON only in this shape: ${CV_SHAPE}`;
-const IMPROVE_SYSTEM = `You improve a CV toward one job post, one round at a time.
+const IMPROVE_SYSTEM = () => `You improve a CV toward one job post, one round at a time.
 ${HONESTY}
 Focus on the requirements that are still partial or no. Make at most 4 changes, each small and clearly better. Keep everything else as it is.
-Writing style: plain and direct.
+${TONES[SET.tone]}
+${lockRule()}
 Return JSON only in this shape: ${CV_SHAPE}`;
 
 function cvToMarkdown(d){
@@ -712,18 +969,19 @@ function markdownToCV(md){
   return d;
 }
 const lineKey = l => norm(l.replace(/^#+\s*/, '').replace(/^[-*]\s+/, '').replace(/^(headline|contact):\s*/i, '').replace(/\|/g, ' '));
-function renderDiff(){
-  const p = state.proposal; if (!p) return;
-  const before = p.before.text.split('\n').map(x => x.trim()).filter(Boolean), after = $('#propMd').value.split('\n').map(x => x.trim()).filter(Boolean);
+function diffHTML(beforeText, afterText){
+  const before = beforeText.split('\n').map(x => x.trim()).filter(Boolean), after = afterText.split('\n').map(x => x.trim()).filter(Boolean);
   const bk = new Set(before.map(lineKey)), ak = new Set(after.map(lineKey));
-  const added = after.filter(l => !bk.has(lineKey(l)) && !/^#{1,2}\s/.test(l)), removed = before.filter(l => !ak.has(lineKey(l)) && !/^#{1,2}\s/.test(l) && l === l.trim() && !/^[A-Z ]{3,}$/.test(l));
+  const added = after.filter(l => !bk.has(lineKey(l)) && !/^#{1,2}\s/.test(l)), removed = before.filter(l => !ak.has(lineKey(l)) && !/^#{1,2}\s/.test(l) && !/^[A-Z ]{3,}$/.test(l));
   const strip = l => esc(l.replace(/^#+\s*/, '').replace(/^[-*]\s+/, ''));
-  $('#diff').innerHTML = (added.length || removed.length)
+  return (added.length || removed.length)
     ? `<p class="hint">${added.length} new or reworded, ${removed.length} removed or reworded</p>` + removed.map(l => `<div class="dl del">Was: ${strip(l)}</div>`).join('') + added.map(l => `<div class="dl add">Now: ${strip(l)}</div>`).join('')
     : '<p class="hint">No changes.</p>';
 }
+function renderDiff(){ const p = state.proposal; if (p) $('#diff').innerHTML = diffHTML(p.before.text, $('#propMd').value); }
 function openProposal(cv, before, label){
   state.proposal = {cv, before, label}; saveState();
+  if (!location.hash.startsWith('#/app/')){ location.hash = '#/app/' + state.id; return; }
   fillReview(); $('#review').scrollIntoView({behavior: REDUCED ? 'auto' : 'smooth', block: 'start'});
 }
 function fillReview(){
@@ -736,8 +994,8 @@ function fillReview(){
 let diffTimer = null;
 $('#propMd').addEventListener('input', () => { clearTimeout(diffTimer); diffTimer = setTimeout(() => { renderDiff(); state.proposal.md = $('#propMd').value; saveState(); }, 250); });
 $$('.tabs button').forEach(b => b.addEventListener('click', () => {
-  $$('.tabs button').forEach(x => x.setAttribute('aria-pressed', x === b)); const cols = $$('.review-grid > div');
-  cols.forEach((c, i) => c.classList.toggle('off', String(i) !== b.dataset.tab));
+  $$('.tabs button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $$('.review-grid > div').forEach((c, i) => c.classList.toggle('off', String(i) !== b.dataset.tab));
 }));
 $('#discardBtn').addEventListener('click', () => { state.proposal = null; saveState(); show('#review', false); });
 $('#reviseBtn').addEventListener('click', async () => {
@@ -748,7 +1006,7 @@ $('#reviseBtn').addEventListener('click', async () => {
   try {
     const current = markdownToCV($('#propMd').value);
     const user = `ORIGINAL CV:\n"""${state.match.cv}"""\n\nCV UNDER REVIEW (JSON):\n${JSON.stringify(current)}\n\nCANDIDATE'S INSTRUCTION:\n${own}\n\nCANDIDATE'S OWN ANSWERS (true):\n${answersText() || 'none'}`;
-    const cv = sanitizeCV(await askGemini(REVISE_SYSTEM, user));
+    const cv = applyLocks(state.cvNew ? current : null, sanitizeCV(await askGemini(REVISE_SYSTEM(), user)));
     state.facts = [state.facts, own].filter(Boolean).join('\n');
     state.proposal.cv = cv; state.proposal.md = null; saveState();
     $('#propMd').value = cvToMarkdown(cv); $('#revInstr').value = ''; renderDiff();
@@ -762,10 +1020,7 @@ $('#approveBtn').addEventListener('click', async () => {
   if (!cv.name || !cv.experience.length) return msg('#msgRev', 'The proposed CV needs a name and at least one experience. Fix the markdown, or discard and draft again.');
   busy('#approveBtn', true, 'Scoring your CV', '#work3');
   try {
-    const after = await rescore(cv);
-    state.cvNew = cv; state.flags = honestyFlags(cv); state.after = after;
-    state.rounds.push({label: state.proposal.label, score: after});
-    if (state.rounds.length > MAX_ROUNDS) state.rounds.shift();
+    await commitCV(cv, state.proposal.label);
     state.proposal = null; saveState(); show('#review', false);
     renderResult(); renderGaps();
     $('#res2').scrollIntoView({behavior: REDUCED ? 'auto' : 'smooth', block: 'start'});
@@ -774,88 +1029,321 @@ $('#approveBtn').addEventListener('click', async () => {
 });
 $('#suggestBtn').addEventListener('click', async () => {
   msg('#msg3', '');
-  if (state.flags.some(f => !f.done)) return msg('#msg3', 'Resolve the honesty flags first, so the next round starts from a true CV.');
+  if (flagsOpen()) return msg('#msg3', 'Resolve the honesty flags first, so the next round starts from a true CV.');
   busy('#suggestBtn', true, 'Drafting the next round', '#work4');
   try {
     const m = state.match;
     const user = `ORIGINAL CV:\n"""${m.cv}"""\n\nCURRENT CV (JSON):\n${JSON.stringify(state.cvNew)}\n\nJOB POST:\n"""${m.jd}"""\n\nREQUIREMENTS:\n${m.reqs.map(r => `- ${r.requirement} (${r.importance})`).join('\n')}\n\nCANDIDATE'S OWN ANSWERS AND INSTRUCTIONS (true):\n${[answersText(), state.facts].filter(Boolean).join('\n') || 'none'}`;
-    const cv = sanitizeCV(await askGemini(IMPROVE_SYSTEM, user));
+    const cv = applyLocks(state.cvNew, sanitizeCV(await askGemini(IMPROVE_SYSTEM(), user)));
     openProposal(cv, {kind: 'md', text: cvToMarkdown(state.cvNew)}, 'Round ' + (state.rounds.length + 1));
   } catch(e){ msg('#msg3', e.message); }
   busy('#suggestBtn', false, '', '#work4');
 });
 
-/* ---------- Downloads ---------- */
+/* ---------- Cover letter ---------- */
+const COVER_SYSTEM = () => `You write a short cover letter for one job.
+${HONESTY}
+Use only facts from the CV and the candidate's own answers. Name the role and the company from the job post.
+At most 220 words in 3 short paragraphs, then a sign-off with the candidate's name. No placeholders in brackets.
+${TONES[SET.tone]}
+Return JSON only: {"letter":""}`;
+function coverFlags(text){ const hay = norm(sourcesText() + '\n' + state.match.jd + '\n' + cvToText(state.cvNew)); return badTerms(text, hay); }
+function renderCover(){
+  const c = state.cover; show('#coverBox', !!c);
+  $('#coverBtn').textContent = c ? 'Write it again' : 'Write a cover letter';
+  if (!c) return;
+  if ($('#coverText').value !== c.text) $('#coverText').value = c.text;
+  const bad = coverFlags(c.text);
+  $('#coverFlags').innerHTML = bad.length ? `<div class="flag"><b>Honesty check: not found in your CV or answers:</b> ${bad.map(esc).join(', ')}<div class="row"><span class="hint">Edit the letter above, or keep them if they are true.</span><button class="btn small" type="button" id="coverKeep">Keep (they are true)</button></div></div>`
+    : '<div class="banner info" role="status"><div><b>Honesty check passed.</b> Every name and number is in your CV, your answers or the job post.</div></div>';
+  $('#coverWord').disabled = bad.length > 0;
+}
+$('#coverBtn').addEventListener('click', async () => {
+  msg('#msg5', '');
+  if (flagsOpen()) return msg('#msg5', 'Resolve the honesty flags on your CV first.');
+  busy('#coverBtn', true, 'Writing your cover letter', '#work5');
+  try {
+    const m = state.match;
+    const out = await askGemini(COVER_SYSTEM(), `CV (JSON):\n${JSON.stringify(state.cvNew)}\n\nJOB POST:\n"""${m.jd}"""\n\nCANDIDATE'S OWN ANSWERS (true):\n${[answersText(), state.facts].filter(Boolean).join('\n') || 'none'}`);
+    const text = String(out.letter || '').trim();
+    if (!text) throw new Error('The AI returned an empty letter. Click again.');
+    state.cover = {text}; saveState(); renderCover();
+  } catch(e){ msg('#msg5', e.message); }
+  busy('#coverBtn', false, '', '#work5');
+});
+let coverTimer = null;
+$('#coverText').addEventListener('input', () => { clearTimeout(coverTimer); coverTimer = setTimeout(() => { state.cover.text = $('#coverText').value; saveState(); }, 300); });
+$('#coverCheck').addEventListener('click', () => { state.cover.text = $('#coverText').value; saveState(); renderCover(); });
+$('#coverFlags').addEventListener('click', e => { if (e.target.id !== 'coverKeep') return; addFacts(coverFlags(state.cover.text)); saveState(); renderCover(); });
+$('#coverCopy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#coverText').value); msg('#msg5', 'Copied.', 'info'); } catch(e){ msg('#msg5', 'Could not copy. Select the text and copy it yourself.'); } });
+$('#coverWord').addEventListener('click', async () => {
+  state.cover.text = $('#coverText').value; saveState();
+  if (coverFlags(state.cover.text).length) return renderCover();
+  const D = docx, paras = state.cover.text.split(/\n+/).map(t => new D.Paragraph({spacing: {after: 200}, children: [new D.TextRun({text: t, font: 'Calibri', size: 22})]}));
+  const doc = new D.Document({sections: [{properties: {page: pageProps()}, children: paras}]});
+  download(await D.Packer.toBlob(doc), fileBase() + '_Cover_Letter.docx');
+});
+
+/* ---------- Editor: Edit, Compare, Code ---------- */
+let edSec = 'summary', edPending = null;
+const sections = d => [['header', 'Header'], ['summary', 'Summary'], ['skills', 'Skills'], ...d.experience.map((e, i) => ['exp:' + i, [e.title, e.org].filter(Boolean).join(', ') || 'Experience ' + (i + 1)]), ['education', 'Education']];
+const lockKey = sec => sec.startsWith('exp:') ? 'experience' : sec;
+function sectionText(d, sec){
+  if (sec === 'header') return [d.name, d.headline, d.contact.join(' | ')].filter(Boolean).join('\n');
+  if (sec === 'summary') return d.summary || '(empty)';
+  if (sec === 'skills') return d.skills.filter(Boolean).join(', ') || '(empty)';
+  if (sec === 'education') return d.education.map(e => [e.title, e.org, e.dates].filter(Boolean).join(' | ')).join('\n') || '(empty)';
+  const e = d.experience[+sec.split(':')[1]]; return e ? [[e.title, e.org, e.dates].filter(Boolean).join(' | '), ...e.bullets.map(b => '- ' + b)].join('\n') : '';
+}
+function mergeSection(cur, nx, sec){
+  const out = clone(cur);
+  if (sec === 'header') out.headline = nx.headline;
+  else if (sec === 'summary') out.summary = nx.summary;
+  else if (sec === 'skills') out.skills = nx.skills;
+  else if (sec === 'education') out.education = nx.education;
+  else { const i = +sec.split(':')[1], e = cur.experience[i]; const m = nx.experience.find(x => norm(x.title) === norm(e.title) && norm(x.org) === norm(e.org)) || nx.experience[i]; if (m) out.experience[i].bullets = m.bullets; }
+  return out;
+}
+const SECTION_SYSTEM = () => `You edit one section of a CV that the candidate is improving.
+${HONESTY}
+Change only the section named in SECTION, following the INSTRUCTION. Every other section must stay exactly as given.
+${TONES[SET.tone]}
+Return the whole CV, JSON only, in this shape: ${CV_SHAPE}`;
+function renderEditor(mode){
+  const d = state.cvNew, tpl = state.template || SET.template;
+  $('#edTitle').textContent = appName(state);
+  $('#edBack').href = '#/app/' + state.id;
+  $$('#edModes a').forEach(a => { a.href = `#/edit/${state.id}/${a.dataset.mode}`; a.dataset.mode === mode ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'); });
+  show('#modeEdit', mode === 'edit'); show('#modeCompare', mode === 'compare'); show('#modeCode', mode === 'code');
+  $('#edExport').disabled = flagsOpen();
+  if (mode === 'edit'){
+    if (!sections(d).some(s => s[0] === edSec)) edSec = 'summary';
+    $('#edSecs').innerHTML = sections(d).map(([k, n]) => `<button type="button" data-sec="${k}" aria-pressed="${k === edSec}">${esc(n)}${SET.locked.includes(lockKey(k)) ? ' <span class="lock">(locked)</span>' : ''}</button>`).join('');
+    $('#edTpl').innerHTML = tplOptions(tpl);
+    $('#edPage').innerHTML = cvHTML(d, tpl);
+    $$('#edPage [data-sec]').forEach(el => el.classList.toggle('on', el.dataset.sec === edSec));
+    const name = (sections(d).find(s => s[0] === edSec) || [, ''])[1], locked = SET.locked.includes(lockKey(edSec));
+    $('#edSecName').textContent = name;
+    $('#edLock').textContent = locked ? 'Locked in Settings. The AI will not change it.' : edSec === 'header' ? 'The AI may change your headline only. Name and contact stay as they are.' : '';
+    $('#edSecNow').textContent = sectionText(d, edSec);
+    $('#edPropose').disabled = locked; $('#edInstr').disabled = locked;
+    if (edPending && edPending.sec === edSec){ $('#edAfter').textContent = sectionText(edPending.cv, edSec); show('#edProp'); } else { edPending = null; show('#edProp', false); }
+  }
+  if (mode === 'compare') renderCompare();
+  if (mode === 'code') renderCode();
+}
+$('#edSecs').addEventListener('click', e => { const b = e.target.closest('[data-sec]'); if (!b) return; edSec = b.dataset.sec; edPending = null; msg('#msg6', ''); renderEditor('edit'); });
+$('#edPage').addEventListener('click', e => { const s = e.target.closest('[data-sec]'); if (!s) return; edSec = s.dataset.sec; edPending = null; msg('#msg6', ''); renderEditor('edit'); });
+$('#edTpl').addEventListener('change', () => { state.template = $('#edTpl').value; saveState(); renderEditor('edit'); });
+$('#edChips').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c && !$('#edInstr').disabled) $('#edInstr').value = c.textContent; });
+$('#edText').addEventListener('click', () => openProposal(clone(state.cvNew), {kind: 'md', text: cvToMarkdown(state.cvNew)}, 'Your edit'));
+$('#edPropose').addEventListener('click', async () => {
+  msg('#msg6', '');
+  const instr = $('#edInstr').value.trim();
+  if (!instr) return msg('#msg6', 'Say what should change, or pick one of the suggestions.');
+  if (flagsOpen()) return msg('#msg6', 'Resolve the honesty flags on this CV first. <a href="#/app/' + state.id + '">Go to the flags</a>');
+  busy('#edPropose', true, 'Proposing a change', '#work6');
+  try {
+    const m = state.match, label = (sections(state.cvNew).find(s => s[0] === edSec) || [, ''])[1];
+    const user = `ORIGINAL CV:\n"""${m.cv}"""\n\nCURRENT CV (JSON):\n${JSON.stringify(state.cvNew)}\n\nJOB POST:\n"""${m.jd}"""\n\nSECTION: ${label}\n\nINSTRUCTION: ${instr}\n\nCANDIDATE'S OWN ANSWERS AND INSTRUCTIONS (true):\n${[answersText(), state.facts].filter(Boolean).join('\n') || 'none'}`;
+    const nx = sanitizeCV(await askGemini(SECTION_SYSTEM(), user));
+    const merged = applyLocks(state.cvNew, mergeSection(state.cvNew, nx, edSec)); // code keeps every other section as it was
+    if (sectionText(merged, edSec) === sectionText(state.cvNew, edSec)) throw new Error('The AI proposed no change to this section. Try a different instruction.');
+    edPending = {sec: edSec, cv: merged, instr, label}; renderEditor('edit');
+  } catch(e){ msg('#msg6', e.message); }
+  busy('#edPropose', false, '', '#work6');
+});
+$('#edSkip').addEventListener('click', () => { edPending = null; renderEditor('edit'); });
+$('#edAccept').addEventListener('click', async () => {
+  if (!edPending) return;
+  busy('#edAccept', true, 'Checking and scoring', '#work6');
+  try {
+    state.facts = [state.facts, edPending.instr].filter(Boolean).join('\n');
+    await commitCV(edPending.cv, 'Edit: ' + edPending.label); edPending = null; $('#edInstr').value = '';
+    renderEditor('edit');
+    msg('#msg6', flagsOpen() ? `Saved. The honesty check flagged something. <a href="#/app/${state.id}">Review the flags</a>` : `Saved. Score is now ${state.after}.`, flagsOpen() ? 'warn' : 'info');
+  } catch(e){ msg('#msg6', e.message); }
+  busy('#edAccept', false, '', '#work6');
+});
+
+function versions(){
+  return [{id: 'orig', label: 'Original CV', text: state.match.cv}, ...state.rounds.map((r, i) => r.cv ? {id: 'r' + i, label: `${r.label} (${r.score})`, cv: r.cv, score: r.score} : null).filter(Boolean), {id: 'cur', label: `Current (${state.after})`, cv: state.cvNew, score: state.after}];
+}
+function renderCompare(){
+  const vs = versions(), a = $('#cmpA').value, b = $('#cmpB').value;
+  const opts = sel => vs.map(v => `<option value="${v.id}"${v.id === sel ? ' selected' : ''}>${esc(v.label)}</option>`).join('');
+  const A = vs.find(v => v.id === a) || vs[0], B = vs.find(v => v.id === b) || vs[vs.length - 1];
+  $('#cmpA').innerHTML = opts(A.id); $('#cmpB').innerHTML = opts(B.id);
+  const pane = v => v.cv ? cvHTML(v.cv, state.template || SET.template) : `<pre class="box">${esc(v.text)}</pre>`;
+  const txt = v => v.cv ? cvToMarkdown(v.cv) : v.text;
+  $('#cmpLeft').innerHTML = pane(A); $('#cmpRight').innerHTML = pane(B);
+  $('#cmpDiff').innerHTML = diffHTML(txt(A), txt(B));
+  $('#cmpRestore').disabled = !B.cv || B.id === 'cur';
+}
+['#cmpA', '#cmpB'].forEach(s => $(s).addEventListener('change', renderCompare));
+$('#cmpRestore').addEventListener('click', async () => {
+  const B = versions().find(v => v.id === $('#cmpB').value); if (!B?.cv) return;
+  busy('#cmpRestore', true, 'Restoring', '#work7');
+  try { await commitCV(clone(B.cv), 'Restored ' + B.label.replace(/ \(\d+\)$/, '')); renderCompare(); msg('#msg7', 'Restored. It is now the current version.', 'info'); }
+  catch(e){ msg('#msg7', e.message); }
+  busy('#cmpRestore', false, '', '#work7');
+});
+
+/* LaTeX is an exact job: plain code, no AI. */
+const texEsc = s => String(s || '').replace(/\\/g, '\\textbackslash{}').replace(/([#$%&_{}])/g, '\\$1').replace(/~/g, '\\textasciitilde{}').replace(/\^/g, '\\textasciicircum{}');
+function cvToLatex(d, tpl = 'classic', page = 'a4'){
+  const paper = page === 'letter' ? 'letterpaper' : 'a4paper';
+  const size = tpl === 'compact' ? '10pt' : '11pt', margin = tpl === 'compact' ? '0.55in' : '0.7in';
+  const L = [`\\documentclass[${size},${paper}]{article}`, `\\usepackage[margin=${margin}]{geometry}`, '\\usepackage[T1]{fontenc}', '\\usepackage[hidelinks]{hyperref}', '\\usepackage{enumitem}', '\\setlist{nosep,leftmargin=1.2em}', '\\pagestyle{empty}', '\\setlength{\\parindent}{0pt}'];
+  if (tpl === 'modern') L.push('\\usepackage{xcolor}', '\\definecolor{accent}{HTML}{2F5BE7}', '\\renewcommand{\\familydefault}{\\sfdefault}', '\\newcommand{\\cvsection}[1]{\\vspace{8pt}{\\large\\bfseries\\color{accent} #1}\\par\\vspace{2pt}}', '\\newcommand{\\cvname}[1]{{\\LARGE\\bfseries\\color{accent} #1}\\par}');
+  else if (tpl === 'ats') L.push('\\renewcommand{\\familydefault}{\\sfdefault}', '\\newcommand{\\cvsection}[1]{\\vspace{8pt}{\\large\\bfseries #1}\\par\\vspace{2pt}}', '\\newcommand{\\cvname}[1]{{\\LARGE\\bfseries #1}\\par}');
+  else L.push(`\\newcommand{\\cvsection}[1]{\\vspace{${tpl === 'compact' ? 4 : 8}pt}{\\large\\bfseries #1}\\par\\vspace{-4pt}\\rule{\\linewidth}{0.6pt}\\par\\vspace{2pt}}`, '\\newcommand{\\cvname}[1]{{\\LARGE\\bfseries #1}\\par}');
+  L.push('\\begin{document}', `\\cvname{${texEsc(d.name)}}`);
+  if (d.headline) L.push(`${texEsc(d.headline)}\\par`);
+  if (d.contact.length) L.push(`{\\small ${d.contact.map(texEsc).join(' \\quad ')}}\\par`);
+  if (d.summary) L.push('\\cvsection{Summary}', texEsc(d.summary) + '\\par');
+  if (d.skills.filter(Boolean).length) L.push('\\cvsection{Skills}', d.skills.filter(Boolean).map(texEsc).join(', ') + '\\par');
+  if (d.experience.length){ L.push('\\cvsection{Experience}'); d.experience.forEach(e => { L.push(`\\textbf{${texEsc([e.title, e.org].filter(Boolean).join(', '))}} \\hfill ${texEsc(e.dates)}\\par`); const b = e.bullets.filter(Boolean); if (b.length) L.push('\\begin{itemize}', ...b.map(x => '  \\item ' + texEsc(x)), '\\end{itemize}'); }); }
+  if (d.education.length){ L.push('\\cvsection{Education}'); d.education.forEach(e => L.push(`\\textbf{${texEsc(e.title)}}${e.org ? ', ' + texEsc(e.org) : ''} \\hfill ${texEsc(e.dates)}\\par`)); }
+  L.push('\\end{document}', '');
+  return L.join('\n');
+}
+function renderCode(){
+  const tpl = state.template || SET.template, tex = cvToLatex(state.cvNew, tpl, SET.page);
+  $('#codeTpl').innerHTML = tplOptions(tpl);
+  $('#codeTex').value = tex;
+  $('#codeInfo').textContent = `${tex.split('\n').length} lines, ${TEMPLATES[tpl][0]} template, ${SET.page === 'letter' ? 'Letter' : 'A4'} page.`;
+  ['#codeCopy', '#codeDl', '#codeOverleaf'].forEach(b => { $(b).disabled = flagsOpen(); });
+  if (flagsOpen()) msg('#msg8', `Resolve the honesty flags before you copy or download. <a href="#/app/${state.id}">Go to the flags</a>`, 'warn'); else msg('#msg8', '');
+}
+$('#codeTpl').addEventListener('change', () => { state.template = $('#codeTpl').value; saveState(); renderCode(); });
+$('#codeCopy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('#codeTex').value); msg('#msg8', 'Copied.', 'info'); } catch(e){ $('#codeTex').select(); msg('#msg8', 'Press Ctrl+C or Cmd+C to copy the selected text.', 'info'); } });
+$('#codeDl').addEventListener('click', () => download(new Blob([$('#codeTex').value], {type: 'application/x-tex'}), fileBase() + '.tex'));
+$('#codeOverleaf').addEventListener('click', () => { $('#olSnip').value = $('#codeTex').value; $('#olForm').submit(); });
+
+/* ---------- Export ---------- */
 const safe = s => String(s || '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
 const fileBase = () => [safe(state.cvNew.name) || 'CV', safe(state.match.company) || 'CV'].join('_');
+const pageProps = (page = SET.page) => ({size: page === 'letter' ? {width: 12240, height: 15840} : {width: 11906, height: 16838}, margin: {top: 720, bottom: 720, left: 860, right: 860}});
 function download(blob, name){ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
-$('#wordBtn').addEventListener('click', async () => {
-  if (state.flags.some(f => !f.done)) return msg('#msg3', 'Resolve every honesty flag before you download.');
-  const d = state.cvNew, D = docx, INK = '0E121B', CO = '2F5BE7';
-  const P = (text, o = {}) => new D.Paragraph({spacing: {after: o.after ?? 60}, children: [new D.TextRun({text, font: 'Calibri', size: o.size || 21, bold: o.bold, color: o.color})]});
-  const H = text => new D.Paragraph({spacing: {before: 200, after: 80}, border: {bottom: {style: D.BorderStyle.SINGLE, size: 6, color: 'C3C8D0', space: 2}}, children: [new D.TextRun({text, font: 'Calibri', size: 22, bold: true, color: CO})]});
-  const kids = [P(d.name, {size: 40, bold: true, color: INK, after: 40})];
-  if (d.headline) kids.push(P(d.headline, {size: 22, after: 40}));
+async function buildDocx(d, tpl, page){
+  const D = docx, INK = '0E121B', accent = tpl === 'modern' ? '2F5BE7' : INK, font = tpl === 'classic' ? 'Georgia' : 'Calibri', base = tpl === 'compact' ? 19 : 21;
+  const P = (text, o = {}) => new D.Paragraph({spacing: {after: o.after ?? 60}, children: [new D.TextRun({text, font, size: o.size || base, bold: o.bold, color: o.color})]});
+  const H = text => new D.Paragraph({spacing: {before: tpl === 'compact' ? 140 : 200, after: 80}, border: tpl === 'classic' || tpl === 'compact' ? {bottom: {style: D.BorderStyle.SINGLE, size: 6, color: INK, space: 2}} : undefined, children: [new D.TextRun({text, font, size: base + 2, bold: true, color: accent})]});
+  const kids = [P(d.name, {size: 40, bold: true, color: accent, after: 40})];
+  if (d.headline) kids.push(P(d.headline, {size: base + 1, after: 40}));
   if (d.contact.length) kids.push(P(d.contact.join(' | '), {size: 18, color: '5B6271', after: 120}));
   if (d.summary){ kids.push(H('Summary')); kids.push(P(d.summary)); }
   const skills = d.skills.filter(Boolean);
   if (skills.length){ kids.push(H('Skills')); kids.push(P(skills.join(', '))); }
   if (d.experience.length){ kids.push(H('Experience')); d.experience.forEach(e => {
-    kids.push(new D.Paragraph({spacing: {before: 100, after: 20}, children: [new D.TextRun({text: [e.title, e.org].filter(Boolean).join(', '), font: 'Calibri', size: 22, bold: true, color: INK}), new D.TextRun({text: e.dates ? '   ' + e.dates : '', font: 'Calibri', size: 18, color: '5B6271'})]}));
-    e.bullets.filter(Boolean).forEach(b => kids.push(new D.Paragraph({bullet: {level: 0}, spacing: {after: 30}, children: [new D.TextRun({text: b, font: 'Calibri', size: 21})]})));
+    kids.push(new D.Paragraph({spacing: {before: 100, after: 20}, children: [new D.TextRun({text: [e.title, e.org].filter(Boolean).join(', '), font, size: base + 1, bold: true, color: INK}), new D.TextRun({text: e.dates ? '   ' + e.dates : '', font, size: 18, color: '5B6271'})]}));
+    e.bullets.filter(Boolean).forEach(b => kids.push(new D.Paragraph({bullet: {level: 0}, spacing: {after: 30}, children: [new D.TextRun({text: b, font, size: base})]})));
   }); }
   if (d.education.length){ kids.push(H('Education')); d.education.forEach(e => kids.push(P([e.title, e.org, e.dates].filter(Boolean).join(' | ')))); }
-  const doc = new D.Document({sections: [{properties: {page: {margin: {top: 720, bottom: 720, left: 860, right: 860}}}, children: kids}]});
-  download(await D.Packer.toBlob(doc), fileBase() + '.docx');
-});
-// LaTeX is an exact job: plain code, no AI.
-const texEsc = s => String(s || '').replace(/\\/g, '\\textbackslash{}').replace(/([#$%&_{}])/g, '\\$1').replace(/~/g, '\\textasciitilde{}').replace(/\^/g, '\\textasciicircum{}');
-function cvToLatex(d){
-  const L = ['\\documentclass[11pt]{article}', '\\usepackage[margin=0.7in]{geometry}', '\\usepackage[hidelinks]{hyperref}', '\\usepackage{enumitem}', '\\setlist{nosep,leftmargin=1.2em}', '\\pagestyle{empty}',
-    '\\newcommand{\\cvsection}[1]{\\vspace{8pt}{\\large\\bfseries #1}\\\\[-6pt]\\rule{\\linewidth}{0.6pt}\\vspace{2pt}}', '\\begin{document}',
-    `{\\LARGE\\bfseries ${texEsc(d.name)}}\\\\`];
-  if (d.headline) L.push(`${texEsc(d.headline)}\\\\`);
-  if (d.contact.length) L.push(`{\\small ${d.contact.map(texEsc).join(' \\quad ')}}`);
-  if (d.summary) L.push('\\cvsection{Summary}', texEsc(d.summary));
-  if (d.skills.filter(Boolean).length) L.push('\\cvsection{Skills}', d.skills.filter(Boolean).map(texEsc).join(', '));
-  if (d.experience.length){ L.push('\\cvsection{Experience}'); d.experience.forEach(e => { L.push(`\\textbf{${texEsc([e.title, e.org].filter(Boolean).join(', '))}} \\hfill ${texEsc(e.dates)}`); const b = e.bullets.filter(Boolean); if (b.length) L.push('\\begin{itemize}', ...b.map(x => '  \\item ' + texEsc(x)), '\\end{itemize}'); else L.push('\\\\'); }); }
-  if (d.education.length){ L.push('\\cvsection{Education}'); d.education.forEach(e => L.push(`\\textbf{${texEsc(e.title)}}${e.org ? ', ' + texEsc(e.org) : ''} \\hfill ${texEsc(e.dates)}\\\\`)); }
-  L.push('\\end{document}', '');
-  return L.join('\n');
+  return D.Packer.toBlob(new D.Document({sections: [{properties: {page: pageProps(page)}, children: kids}]}));
 }
-$('#texBtn').addEventListener('click', () => {
-  if (state.flags.some(f => !f.done)) return msg('#msg3', 'Resolve every honesty flag before you download.');
-  download(new Blob([cvToLatex(state.cvNew)], {type: 'application/x-tex'}), fileBase() + '.tex');
+function printPDF(d, tpl, page, title){
+  const w = window.open('', '_blank');
+  if (!w) throw new Error('Your browser blocked the print window. Allow pop-ups for this page, then try again.');
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title><style>${$('#cvcss').textContent}@page{size:${page === 'letter' ? 'letter' : 'A4'};margin:14mm}body{margin:0}.cv{border:0;padding:0}</style></head><body>${cvHTML(d, tpl)}</body></html>`);
+  w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
+}
+let expPage = SET.page;
+function openExport(){
+  if (flagsOpen()) return;
+  msg('#msgExp', '');
+  const fmt = SET.exportFmt || 'pdf'; $$('[name=fmt]').forEach(r => { r.checked = r.value === fmt; });
+  $('#expTpl').innerHTML = tplOptions(state.template || SET.template);
+  expPage = SET.page; $$('#expPage button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === expPage));
+  $('#expSent').checked = (state.status || 'checked') === 'checked';
+  syncExpName(); $('#exportDlg').showModal();
+}
+function syncExpName(){ const ext = {pdf: 'pdf', docx: 'docx', tex: 'tex', txt: 'txt'}[$('[name=fmt]:checked').value]; $('#expName').value = fileBase() + '.' + ext; }
+$$('[name=fmt]').forEach(r => r.addEventListener('change', syncExpName));
+$('#expPage').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; expPage = b.dataset.v; $$('#expPage button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+$('#exportBtn').addEventListener('click', openExport); $('#edExport').addEventListener('click', openExport);
+$('#expClose').addEventListener('click', () => $('#exportDlg').close());
+$('#expGo').addEventListener('click', async () => {
+  const fmt = $('[name=fmt]:checked').value, tpl = $('#expTpl').value, d = state.cvNew;
+  let name = $('#expName').value.trim() || fileBase(); const ext = '.' + fmt; if (!name.toLowerCase().endsWith(ext)) name += ext;
+  try {
+    if (fmt === 'pdf') printPDF(d, tpl, expPage, name.replace(/\.pdf$/i, ''));
+    else if (fmt === 'docx') download(await buildDocx(d, tpl, expPage), name);
+    else if (fmt === 'tex') download(new Blob([cvToLatex(d, tpl, expPage)], {type: 'application/x-tex'}), name);
+    else download(new Blob([cvToText(d)], {type: 'text/plain'}), name);
+    SET.exportFmt = fmt; saveSet();
+    if ($('#expSent').checked && (state.status || 'checked') === 'checked'){ state.status = 'sent'; $('#appStatus').value = 'sent'; }
+    state.template = tpl; saveState();
+    $('#exportDlg').close();
+    if (location.hash.startsWith('#/app/')) renderResult();
+  } catch(e){ msg('#msgExp', e.message); }
 });
 
 /* ---------- Lists ---------- */
 const appName = a => [a.match.role, a.match.company].filter(Boolean).join(', ') || 'Untitled application';
 const appStatus = a => a.flags.some(f => !f.done) ? 'Honesty flags open' : a.proposal ? 'Waiting for your review' : a.cvNew ? 'Approved CV ready' : 'Fit checked';
-function itemHTML(a, extra = ''){
-  const v = verdict(a.cvNew ? a.after : a.before);
-  return `<a class="item" href="#/app/${a.id}"><span class="fig">${a.cvNew ? a.after : a.before}</span><span><strong>${esc(appName(a))}</strong><span class="hint">${v.t}. ${appStatus(a)}.</span></span>${extra}<span class="btn small onink">Open</span></a>`;
-}
 function renderHome(){
   const h = new Date().getHours();
   $('#greet').textContent = h < 12 ? 'Good morning.' : h < 18 ? 'Good afternoon.' : 'Good evening.';
   $('#homeKey').textContent = store.get('apn_key') ? 'Saved in this browser' : 'Add it once, kept in this browser';
+  $('#homeMaster').textContent = master.text ? 'Saved, fills every new application' : 'Upload once, reuse for every job';
   show('#homeEmpty', !apps.length); show('#homeFull', !!apps.length);
-  $('#homeList').innerHTML = apps.slice(0, 5).map(a => itemHTML(a)).join('');
+  $('#homeList').innerHTML = apps.slice(0, 5).map(a => `<a class="item" href="#/app/${a.id}"><span class="fig">${latest(a)}</span><span><strong>${esc(appName(a))}</strong><span class="hint">${statusName(a.status)}. ${appStatus(a)}.</span></span><span class="btn small onink">Open</span></a>`).join('');
   const needs = apps.filter(a => a.proposal || a.flags.some(f => !f.done) || !a.cvNew).slice(0, 4);
-  $('#homeNeeds').innerHTML = needs.length ? needs.map(a => `<a class="needs" href="#/app/${a.id}"><strong>${esc(appName(a))}</strong><span class="hint">${a.flags.some(f => !f.done) ? 'Resolve the honesty flags before you download.' : a.proposal ? 'A proposed CV is waiting for your review.' : 'Answer the gap questions and draft a rewrite.'}</span></a>`).join('')
+  $('#homeNeeds').innerHTML = needs.length ? needs.map(a => `<a class="needs" href="#/app/${a.id}"><strong>${esc(appName(a))}</strong><span class="hint">${a.flags.some(f => !f.done) ? 'Resolve the honesty flags before you export.' : a.proposal ? 'A proposed CV is waiting for your review.' : 'Answer the gap questions and draft a rewrite.'}</span></a>`).join('')
     : '<p class="hint">Nothing waiting. Every application has an approved CV.</p>';
+  const avg = Math.round(apps.reduce((s, a) => s + latest(a), 0) / apps.length);
+  const stats = [[apps.length, apps.length === 1 ? 'application' : 'applications'], [apps.filter(a => ['interview', 'offer'].includes(a.status)).length, 'interviews or offers'], [avg, 'average fit'], [apps.reduce((s, a) => s + a.rounds.length, 0), 'versions approved']];
+  $('#homeStats').innerHTML = stats.map(([n, l]) => `<div><b>${n}</b><span class="hint">${l}</span></div>`).join('');
 }
 let filter = 'all';
+$('#appFilter').innerHTML = [['all', 'All'], ...STATUSES].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${k === 'all'}">${n}</button>`).join('');
 function renderApps(){
-  const list = apps.filter(a => filter === 'all' || verdict(a.cvNew ? a.after : a.before).k === filter);
-  $('#appList').innerHTML = list.length ? list.map(a => `<div class="item"><span class="fig">${a.cvNew ? a.after : a.before}</span><span><strong>${esc(appName(a))}</strong><span class="hint">${verdict(a.cvNew ? a.after : a.before).t}. ${appStatus(a)}.</span></span><div class="row"><a class="btn small onink" href="#/app/${a.id}">Open</a><button class="btn small onink" type="button" data-del="${a.id}">Delete</button></div></div>`).join('')
-    : `<div class="empty" style="padding:8px 0"><pre class="tex" data-tex="sleepy" aria-hidden="true"></pre><div><p style="margin-bottom:14px">${apps.length ? 'No applications match this filter.' : 'No applications yet.'}</p><a class="btn small onink" href="#/new">New application</a></div></div>`;
+  const list = apps.filter(a => filter === 'all' || (a.status || 'checked') === filter);
+  $('#appList').innerHTML = list.length ? list.map(a => `<div class="item"><span class="fig">${latest(a)}</span><span><strong>${esc(appName(a))}</strong><span class="hint">${verdict(latest(a)).t}. ${appStatus(a)}.</span></span><span class="tag ${a.status === 'interview' || a.status === 'offer' ? 't-partial' : ''}" style="border-color:currentColor">${statusName(a.status)}</span><div class="row"><a class="btn small onink" href="#/app/${a.id}">Open</a><button class="btn small onink" type="button" data-del="${a.id}">Delete</button></div></div>`).join('')
+    : `<div class="empty" style="padding:8px 0"><pre class="tex" data-tex="sleepy" aria-hidden="true"></pre><div><p style="margin-bottom:14px">${apps.length ? 'No applications with this status.' : 'No applications yet.'}</p><a class="btn small onink" href="#/new">New application</a></div></div>`;
   paintTex($('#appList'));
 }
 $('#appFilter').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; filter = b.dataset.f; $$('#appFilter button').forEach(x => x.setAttribute('aria-pressed', x === b)); renderApps(); });
 $('#appList').addEventListener('click', e => { const b = e.target.closest('[data-del]'); if (!b) return; const a = apps.find(x => x.id === b.dataset.del); if (a && confirm(`Delete ${appName(a)}?`)){ apps = apps.filter(x => x !== a); saveApps(); renderApps(); } });
+
+function renderResumes(){
+  $('#masterText').value = master.text || '';
+  $('#masterInfo').textContent = master.text ? `Saved ${new Date(master.updated).toLocaleDateString(undefined, {day: 'numeric', month: 'short'})}. Fills the CV box for every new application.` : 'Fills the CV box for every new application.';
+  const done = apps.filter(a => a.cvNew);
+  $('#cvGrid').innerHTML = done.length ? done.map(a => `<div class="card"><div class="thumb">${cvHTML(a.cvNew, a.template || SET.template, {mini: 1})}</div><div class="body"><strong>${esc(appName(a))}</strong><span class="hint">${a.rounds.length} version${a.rounds.length === 1 ? '' : 's'}, fit ${a.after}, ${TEMPLATES[a.template || SET.template][0]}</span><div class="row"><a class="btn small primary" href="#/edit/${a.id}/edit">Edit</a><a class="btn small" href="#/edit/${a.id}/compare">Versions</a></div></div></div>`).join('')
+    : '<div class="plate empty"><pre class="tex" data-tex="sleepy" aria-hidden="true"></pre><p class="hint" style="max-width:40ch">Tailored versions appear here once you approve a rewrite for an application.</p></div>';
+  paintTex($('#cvGrid'));
+}
+$('#masterSave').addEventListener('click', () => {
+  const t = $('#masterText').value.trim();
+  if (t && t.length < 100) return msg('#msgMaster', 'This looks too short for a full CV.');
+  master = {text: t, updated: Date.now()}; store.set('anyjob_master', JSON.stringify(master));
+  msg('#msgMaster', t ? 'Saved. New applications start with this CV.' : 'Cleared.', 'info'); renderResumes();
+});
+
+const SAMPLE = {name: 'Sample Name', headline: 'Sample headline for the preview', contact: ['name@example.com', 'City'], summary: 'Two or three lines about the work you do and the results it brings. Templates change the look, never the words.',
+  skills: ['Skill one', 'Skill two', 'Skill three'], experience: [{title: 'Role title', org: 'Company', dates: '2023 to now', bullets: ['What you did and what happened because of it', 'Another line that starts with a verb']}, {title: 'Earlier role', org: 'Company', dates: '2021 to 2023', bullets: ['One line about this role']}], education: [{title: 'Degree', org: 'University', dates: '2021'}]};
+function renderTemplates(){
+  const own = apps.find(a => a.cvNew), d = own ? own.cvNew : SAMPLE;
+  $('#tplLede').textContent = own ? `Previewed with your CV for ${appName(own)}. Switching re-flows your content. Nothing is lost.` : 'Previewed with sample text. Switching re-flows your content. Nothing is lost.';
+  $('#tplGrid').innerHTML = Object.entries(TEMPLATES).map(([k, [n, desc]]) => `<div class="card${k === SET.template ? ' on' : ''}"><div class="thumb">${cvHTML(d, k, {mini: 1})}</div><div class="body"><strong>${n}</strong><span class="hint">${desc}</span><div class="row">${k === SET.template ? '<span class="tag t-must">Default</span>' : `<button class="btn small" type="button" data-tpl="${k}">Make default</button>`}</div></div></div>`).join('');
+}
+$('#tplGrid').addEventListener('click', e => { const b = e.target.closest('[data-tpl]'); if (!b) return; SET.template = b.dataset.tpl; saveSet(); renderTemplates(); });
+
+/* ---------- Settings ---------- */
+function renderSettings(){
+  $$('#toneSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === SET.tone));
+  $$('#pageSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === SET.page));
+  $('#locks').innerHTML = LOCKABLE.map(([k, n]) => `<label><input type="checkbox" value="${k}"${SET.locked.includes(k) ? ' checked' : ''}>${n}</label>`).join('');
+  $('#setTpl').innerHTML = tplOptions(SET.template);
+}
+$('#toneSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; SET.tone = b.dataset.v; saveSet(); renderSettings(); });
+$('#pageSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; SET.page = b.dataset.v; saveSet(); renderSettings(); });
+$('#locks').addEventListener('change', () => { SET.locked = $$('#locks input:checked').map(i => i.value); saveSet(); });
+$('#setTpl').addEventListener('change', () => { SET.template = $('#setTpl').value; saveSet(); });
 $('#clearBtn').addEventListener('click', () => { if (!apps.length) return msg('#msgSet', 'There is nothing to delete.', 'info'); if (confirm('Delete every saved application?')){ apps = []; saveApps(); msg('#msgSet', 'Deleted.', 'info'); } });
-$('#homeUpload').addEventListener('click', () => { location.hash = '#/new'; setTimeout(() => $('#file').click(), 50); });
 
 /* ---------- Router ---------- */
 function renderChrome(){
@@ -863,16 +1351,24 @@ function renderChrome(){
   $('#keyState').textContent = store.get('apn_key') ? 'Gemini key saved' : 'No API key yet';
   $('#modelState').textContent = $('#model').value;
 }
+const VIEWS = ['welcome', 'home', 'new', 'apps', 'resumes', 'templates', 'settings', 'app', 'edit'];
 function route(){
-  const [, view = '', id] = location.hash.split('/');
-  let v = ['welcome', 'home', 'new', 'apps', 'settings', 'app'].includes(view) ? view : (apps.length ? 'home' : 'welcome');
-  if (v === 'app'){ state = apps.find(a => a.id === id) || null; if (!state){ v = 'apps'; } }
+  const [, view = '', id, mode = 'edit'] = location.hash.split('/');
+  let v = VIEWS.includes(view) ? view : (apps.length ? 'home' : 'welcome');
+  if (v === 'app' || v === 'edit'){ state = apps.find(a => a.id === id) || null; if (!state) v = 'apps'; else if (v === 'edit' && !state.cvNew) v = 'app'; }
   $$('[data-view]').forEach(s => s.classList.toggle('hidden', s.dataset.view !== v));
-  $$('[data-nav]').forEach(a => a.dataset.nav === v || (v === 'app' && a.dataset.nav === 'apps') ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  $('#wrap').classList.toggle('wide', v === 'edit');
+  const navKey = v === 'app' || v === 'edit' ? 'apps' : v;
+  $$('[data-nav]').forEach(a => a.dataset.nav === navKey ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
   if (v === 'home') renderHome();
   if (v === 'apps') renderApps();
-  if (v === 'app'){ ['#msg2', '#msgRev', '#msg3'].forEach(s => msg(s, '')); renderMatch(); fillReview(); renderResult(); }
-  document.title = v === 'app' ? appName(state) + ', AnyJob' : 'AnyJob';
+  if (v === 'resumes') renderResumes();
+  if (v === 'templates') renderTemplates();
+  if (v === 'settings') renderSettings();
+  if (v === 'new' && !$('#cv').value.trim() && master.text){ $('#cv').value = master.text; msg('#fileMsg', 'Filled from your <a href="#/resumes">master resume</a>. Change it here for this job only.', 'info'); }
+  if (v === 'app'){ ['#msg2', '#msgRev', '#msg3', '#msg5'].forEach(s => msg(s, '')); renderMatch(); fillReview(); renderResult(); }
+  if (v === 'edit'){ ['#msg6', '#msg7', '#msg8'].forEach(s => msg(s, '')); edPending = null; renderEditor(['edit', 'compare', 'code'].includes(mode) ? mode : 'edit'); }
+  document.title = v === 'app' || v === 'edit' ? appName(state) + ', AnyJob' : 'AnyJob';
   window.scrollTo(0, 0);
 }
 addEventListener('hashchange', route);
