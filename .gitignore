@@ -1,0 +1,7 @@
+# Machine-specific tool config (local paths only)
+.mcp.json
+.cursor/
+# Generated FigCraft build scripts (rebuild with the generators in design/tools)
+design/tools/script*.json
+# Third-party Awwwards thumbnails used for inspiration only
+design/refs/

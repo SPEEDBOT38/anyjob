@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- Tex, the AnyJob mascot: an ASCII resume page that rewrites its own line, then signs it. Signal (Wayfind) colours. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tex, the AnyJob mascot</title>
+<style>
+  :root {
+    --color-cobalt: #2F5BE7; --color-deep: #2449C4; --color-ink: #0E121B; --color-paper: #FCFDFE;
+    --color-amber: #F3B526; --color-soft: #C9D4FA;
+    --font-mono: "Chivo Mono", Consolas, ui-monospace, monospace;
+  }
+  html, body { overflow-x: clip; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--color-cobalt); color: var(--color-paper); font-family: var(--font-mono); }
+  .plate { border: 2px solid var(--color-ink); background: var(--color-deep); padding: 32px 40px 24px; }
+  pre { margin: 0; font: 700 28px/1.15 var(--font-mono); min-width: 23ch; min-height: 11.5em; }
+  .ed { color: var(--color-amber); }
+  .old { color: var(--color-soft); }
+  .sign { background: var(--color-amber); color: var(--color-ink); }
+  .cap { margin: 20px 0 0; font-size: 14px; color: var(--color-soft); }
+  .cap b { color: var(--color-paper); }
+</style>
+</head>
+<body>
+<div class="plate">
+<pre id="tex" aria-label="Tex, a resume page with a face, holding a sign that says L6">
+ .------------,
+ |  ^     ^   |\
+ |    \_/     |_\  .----.
+ |              |--| L6 |
+ |  ==========  |  '----'
+ |  <span class="ed">=========</span>   |
+ |  ========    |
+ '--------------'
+     |      |
+    _|      |_</pre>
+<p class="cap"><b>Tex</b>, rewrites one line at a time.</p>
+</div>
+<script>
+  // Each frame: eyes, mouth, the edited line (6), its class, whether the sign is up, which feet.
+  const line = (t, cls) => cls ? `<span class="${cls}">${t}</span>` : t;
+  function draw(f) {
+    const sign = f.sign;
+    return [
+      ' .------------,',
+      ' |  ' + f.eyes + '   |\\',
+      ' |    ' + f.mouth + '     |_\\' + (sign ? '  <span class="sign">.----.</span>' : ''),
+      ' |              |' + (sign ? '--<span class="sign">| L6 |</span>' : ''),
+      ' |  ==========  |' + (sign ? "  <span class=\"sign\">'----'</span>" : ''),
+      ' |  ' + line(f.l6, f.cls) + ' '.repeat(12 - f.l6.length) + '|',
+      ' |  ========    |',
+      " '--------------'",
+      f.tap ? '     |      |_' : '     |      |',
+      f.tap ? '    _|      ' : '    _|      |_',
+    ].join('\n');
+  }
+  const O = 'o     o', B = '-     -', H = '^     ^', N = ' - ', S = '\\_/', T = ' o ';
+  const frames = [
+    [{ eyes: O, mouth: N, l6: '======' }, 1100],
+    [{ eyes: B, mouth: N, l6: '======' }, 120],
+    [{ eyes: O, mouth: N, l6: '======' }, 600],
+    [{ eyes: O, mouth: T, l6: '~~~~~~', cls: 'old' }, 420],
+    [{ eyes: O, mouth: T, l6: '_', cls: 'ed', tap: 1 }, 260],
+    [{ eyes: O, mouth: T, l6: '===_', cls: 'ed' }, 160],
+    [{ eyes: O, mouth: T, l6: '======_', cls: 'ed', tap: 1 }, 160],
+    [{ eyes: O, mouth: T, l6: '=========_', cls: 'ed' }, 160],
+    [{ eyes: O, mouth: N, l6: '=========', cls: 'ed', tap: 1 }, 300],
+    [{ eyes: H, mouth: S, l6: '=========', cls: 'ed', sign: 1 }, 1500],
+    [{ eyes: B, mouth: S, l6: '=========', cls: 'ed', sign: 1 }, 120],
+    [{ eyes: H, mouth: S, l6: '=========', cls: 'ed', sign: 1 }, 700],
+  ];
+  const el = document.getElementById('tex');
+  // ponytail: reduced motion keeps the static signed frame already in the markup.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let i = 0;
+    (function tick() { const [f, ms] = frames[i]; el.innerHTML = draw(f); i = (i + 1) % frames.length; setTimeout(tick, ms); })();
+  }
+</script>
+</body>
+</html>
