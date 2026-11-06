@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apply or Not</title>
+<style>
+:root{--navy:#14324F;--navy2:#1D4268;--teal:#0F766E;--amber:#D97706;--ink:#1A2430;--ink2:#4A5563;--mute:#6B7785;--line:#E2E6EB;--bg:#F4F6F8;--card:#fff;--green:#067647;--greenSoft:#E7F6EE;--red:#B42318;--redSoft:#FDECEA;--amberSoft:#FDF3E7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.top{background:var(--navy);color:#fff;padding:22px 16px}
+.top .in{max-width:960px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.top h1{margin:0;font:700 28px/1.2 Georgia,"Times New Roman",serif}
+.top p{margin:4px 0 0;color:#C9D6E2}
+.ver{background:var(--amber);color:#fff;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;white-space:nowrap}
+main{max-width:960px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.step{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--navy);font-size:18px;margin-bottom:12px}
+.step b{background:var(--navy);color:#fff;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+label{display:block;font-weight:600;margin:12px 0 6px}
+textarea,input[type=text],input[type=password],select{width:100%;font:inherit;padding:10px 12px;border:1px solid #CBD2D9;border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:160px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 18px;cursor:pointer;background:#E8ECF0;color:var(--navy);margin-top:14px}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.small{padding:6px 10px;font-size:13px;margin-top:0}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.hint{color:var(--mute);font-size:13px}
+.banner{border-radius:10px;padding:10px 12px;margin-top:12px;font-size:14px}
+.banner.err{background:var(--redSoft);color:#7A1D14}
+.banner.info{background:#E6F4F2;color:#0B4F4A}
+.banner.warn{background:var(--amberSoft);color:#7A4A06}
+.hidden{display:none!important}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;margin-right:8px;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.t-must{background:#E3EAF2;color:var(--navy)} .t-nice{background:#EEF0F2;color:var(--ink2)}
+.t-yes{background:var(--greenSoft);color:var(--green)} .t-partial{background:var(--amberSoft);color:#9A5A04} .t-no{background:var(--redSoft);color:var(--red)}
+.ev{font-style:italic;color:var(--ink2)}
+.nf{color:var(--red);font-weight:600;font-size:13px}
+footer{max-width:960px;margin:0 auto;padding:8px 16px 32px;color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+<header class="top"><div class="in"><div><h1>Apply or Not</h1><p>Know your fit. Fix your CV. Honestly.</p></div><span class="ver" id="ver">v0.1</span></div></header>
+<main>
+  <section class="card">
+    <div class="step"><b>1</b> Your CV and one job</div>
+    <div class="grid2">
+      <div><label for="cv">Your CV text</label><textarea id="cv" placeholder="Paste your CV text here"></textarea></div>
+      <div><label for="jd">The job post</label><textarea id="jd" placeholder="Paste the full job post here"></textarea></div>
+    </div>
+    <button class="btn primary" id="matchBtn">Check my fit</button>
+    <div id="msg1"></div>
+  </section>
+</main>
+<footer>AI does the fuzzy jobs. Code does the exact jobs. You decide.</footer>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const show = (sel, on = true) => $(sel).classList.toggle('hidden', !on);
+const msg = (sel, text, kind = 'err') => { $(sel).innerHTML = text ? `<div class="banner ${kind}">${text}</div>` : ''; };
+$('#matchBtn').addEventListener('click', () => msg('#msg1', 'Coming soon.', 'info'));
+</script>
+</body>
+</html>

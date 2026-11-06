@@ -1,0 +1,24 @@
+Associate Product Manager, Growth
+Kiranaly (quick commerce, Bengaluru)
+
+About the role
+Kiranaly delivers groceries in 15 minutes across Bengaluru. You will own one growth funnel end to end, from first app open to second order.
+
+What you will do
+- Find the biggest drop-offs in the new-user funnel and fix them with engineering and design.
+- Design, run and read A/B tests.
+- Talk to customers every week and turn what you hear into product decisions.
+- Write clear PRDs that engineers can build from.
+- Track conversion and retention, and report weekly to the growth lead.
+
+Requirements (must have)
+- 1 to 3 years in product, growth, analytics or operations.
+- SQL for your own analysis.
+- Experience running experiments or A/B tests.
+- Strong written communication, including PRDs or specs.
+- Experience working with engineers or a product team.
+
+Nice to have
+- Mixpanel or Amplitude.
+- Experience with a consumer app or D2C brand.
+- Kannada or Hindi, for customer calls.
