@@ -1,0 +1,5 @@
+# Hatchable project manifest. This file marks the folder as a
+# Hatchable project and declares the services it uses.
+# Reference: https://hatchable.com/docs/developers/config
+name = "AnyJob"
+description = "Know your fit, fix your CV honestly. Paste your CV and a job post: AnyJob scores the fit, rewrites the CV toward the job without inventing anything, and lets you approve every change. Signal design with Tex the mascot."

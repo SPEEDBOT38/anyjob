@@ -1,0 +1,57 @@
+AnyJob - Deep UX Research & GitHub Integration Blueprint
+PRODUCT RESEARCH · 23 NOVEMBER 2026
+=======================================================
+
+STATUS LEGEND:
+  [ ] Not started
+  [~] In progress
+  [x] Complete
+
+TASK LIST
+---------
+
+P0 - FOUNDATION
+[x] 1. Create tasks.txt tracking file with full task list
+[x] 2. Define shared data model (CareerProfile, SearchProfile, JobPosting, MatchAssessment, ResumeVersion, Application)
+[x] 3. Resume ingestion - multi-format (PDF, DOCX, TXT, LaTeX) + OCR for scanned
+[x] 4. Master Career Profile - structured, user-confirmed, editable
+[x] 5. Job discovery - JobSpy + Apify + scheduler + dedup + enrichment
+[x] 6. Explainable matching - eligibility + relevance scoring + missing evidence
+[x] 7. Evidence-grounded tailoring - no fabrication, user approval workflow
+[x] 8. Resume rendering - TXT, LaTeX, PDF, DOCX + PDF QA validation
+[x] 9. Application packets - link job to resume + status tracker
+[x] 10. Agent activity log - scheduled discovery, observable background tasks
+
+P1 - EXPERIENCE
+[~] 11. Resume Studio - unified editor + preview + analysis drawer (frontend added, wired to backend)
+[ ] 12. UX polish and mobile responsiveness
+
+P2 - AUTONOMY
+[ ] 13. Browser autofill / assisted apply
+[ ] 14. Optional auto-submission with explicit authorization
+
+REPOS INTEGRATED SO FAR
+-----------------------
+1. AnyJob (anyjob-code-20261123-1201) - base Hatchable SPA (fit scoring, editor, LaTeX export, settings)
+2. JobSpy (JobSpy-main) - backend API at api/main.py for LinkedIn, Indeed, ZipRecruiter, Glassdoor
+3. latex-resume-builder / Lampzi (latex-resume-builder-main) - template gallery on Templates screen
+4. resume_optimizer (resume_optimizer-main) - 4 resume types x 6 categories, JD upload/paste, Word export -> #/build screen
+
+SERVERS RUNNING
+---------------
+- JobSpy FastAPI backend: http://127.0.0.1:8765 (all /api/* routes registered + tested)
+- AnyJob SPA static server: http://127.0.0.1:8766/index.html
+
+BACKEND FLOW TEST RESULT (2026-11-23)
+-------------------------------------
+- Profile create: OK
+- Job discovery (JobSpy): OK - 3 jobs stored, dedup works
+- Explainable matching: OK - verdict/eligibility/score/explanation generated
+- Tailoring: returns clean 502 "Configure a kilocode or Gemini key in Settings" (no AI key yet)
+  -> User said they will attach kilocode API key soon; then tailoring/rendering/packets work end-to-end
+
+PROGRESS LOG
+============
+2026-11-23 13:15 - Backend API fully implemented and tested end-to-end (profile, discovery, matching). Tailoring waits on kilocode key.
+2026-11-23 13:07 - Created task list. Frontend Profile + Studio screens added and wired to backend.
+2026-11-23 13:26 - GRAPHIFY complete: repo_graph.dot, repo_graph.json (34 nodes/42 edges), repo_edges.csv, repo_traverse.py (BFS/DFS/shortest-path helper), GRAPHIFY.md

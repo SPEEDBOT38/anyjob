@@ -1,0 +1,43 @@
+source,target,type,label
+main,rp,includes,routes_profile.py
+main,rd,includes,routes_discovery.py
+main,rm,includes,routes_matching.py
+main,rt,includes,routes_tailoring.py
+main,rr,includes,routes_rendering.py
+main,rpck,includes,routes_packets.py
+main,ra,includes,routes_activity.py
+rp,models,uses,Pydantic entities
+rd,models,uses,Pydantic entities
+rm,models,uses,Pydantic entities
+rt,models,uses,Pydantic entities
+rr,models,uses,Pydantic entities
+rpck,models,uses,Pydantic entities
+ra,models,uses,Pydantic entities
+rp,store,uses,JSON store
+rd,store,uses,JSON store
+rm,store,uses,JSON store
+rt,store,uses,JSON store
+rr,store,uses,JSON store
+rpck,store,uses,JSON store
+ra,store,uses,JSON store
+rp,ingestion,uses,Resume extraction
+models,pydantic,depends_on,Data validation
+ingestion,PyPDF2,depends_on,PDF extraction
+ingestion,docx2txt,depends_on,DOCX extraction
+rr,reportlab,depends_on,PDF generation
+rt,httpx,depends_on,AI API calls
+rd,jobspy,depends_on,Job scraping
+welcome,home,navigates_to,SPA route
+home,jobs,navigates_to,SPA route
+home,build,navigates_to,SPA route
+home,profile,navigates_to,SPA route
+home,studio,navigates_to,SPA route
+home,new,navigates_to,SPA route
+jobs,new,navigates_to,SPA route
+build,studio,navigates_to,SPA route
+profile,studio,navigates_to,SPA route
+studio,resumes,navigates_to,SPA route
+new,app_detail,navigates_to,SPA route
+app_detail,editor,navigates_to,SPA route
+editor,resumes,navigates_to,SPA route
+apps,app_detail,navigates_to,SPA route

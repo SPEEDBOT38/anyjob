@@ -1,0 +1,93 @@
+digraph AnyJobRepo {
+  rankdir=LR;
+  label="AnyJob Repository Dependency Graph";
+  labelloc=t;
+
+  node [shape=box, style=filled];
+
+  main [label="api/main.py\nFastAPI App", fillcolor="#e1f5e1"];
+  models [label="api/models.py\nPydantic Entities", fillcolor="#fff3e0"];
+  store [label="api/storage.py\nJSON File Store", fillcolor="#e3f2fd"];
+  ingestion [label="api/ingestion.py\nResume Extraction", fillcolor="#f3e5f5"];
+
+  rp [label="routes_profile.py\nProfile / Upload", fillcolor="#e8f5e9"];
+  rd [label="routes_discovery.py\nJobSpy Search + Store", fillcolor="#e8f5e9"];
+  rm [label="routes_matching.py\nExplainable Matching", fillcolor="#e8f5e9"];
+  rt [label="routes_tailoring.py\nTailoring + Approve", fillcolor="#e8f5e9"];
+  rr [label="routes_rendering.py\nExport + PDF QA", fillcolor="#e8f5e9"];
+  rpck [label="routes_packets.py\nApplication Packets", fillcolor="#e8f5e9"];
+  ra [label="routes_activity.py\nActivity Log + Scheduler", fillcolor="#e8f5e9"];
+
+  pydantic [label="pydantic", fillcolor="#ffebee", shape=ellipse];
+  jobspy [label="python-jobspy", fillcolor="#ffebee", shape=ellipse];
+  PyPDF2 [label="PyPDF2", fillcolor="#ffebee", shape=ellipse];
+  docx2txt [label="docx2txt", fillcolor="#ffebee", shape=ellipse];
+  reportlab [label="reportlab", fillcolor="#ffebee", shape=ellipse];
+  httpx [label="httpx", fillcolor="#ffebee", shape=ellipse];
+
+  main -> rp;
+  main -> rd;
+  main -> rm;
+  main -> rt;
+  main -> rr;
+  main -> rpck;
+  main -> ra;
+
+  rp -> models;
+  rd -> models;
+  rm -> models;
+  rt -> models;
+  rr -> models;
+  rpck -> models;
+  ra -> models;
+
+  rp -> store;
+  rd -> store;
+  rm -> store;
+  rt -> store;
+  rr -> store;
+  rpck -> store;
+  ra -> store;
+
+  rp -> ingestion;
+
+  models -> pydantic;
+  ingestion -> PyPDF2;
+  ingestion -> docx2txt;
+  rr -> reportlab;
+  rt -> httpx;
+  rd -> jobspy;
+
+  subgraph cluster_frontend {
+    label="public/index.html SPA";
+    welcome [label="#/welcome"];
+    home [label="#/home"];
+    jobs [label="#/jobs"];
+    build [label="#/build"];
+    profile [label="#/profile"];
+    studio [label="#/studio"];
+    new [label="#/new"];
+    apps [label="#/apps"];
+    resumes [label="#/resumes"];
+    templates [label="#/templates"];
+    settings [label="#/settings"];
+    app_detail [label="#/app/:id"];
+    editor [label="#/edit/:id/:mode"];
+    welcome -> home;
+    home -> jobs;
+    home -> build;
+    home -> profile;
+    home -> studio;
+    home -> new;
+    jobs -> new;
+    build -> studio;
+    profile -> studio;
+    studio -> resumes;
+    new -> app_detail;
+    app_detail -> editor;
+    editor -> resumes;
+    apps -> app_detail;
+  }
+
+  main -> settings [style=dotted];
+}
