@@ -67,7 +67,7 @@ graph TD
     rpck --> models
     ra --> models
 
-    rp --> store[api/storage.py<br/>JSON file store]
+    rp --> store[backend/storage.py<br/>JSON file store]
     rd --> store
     rm --> store
     rt --> store
@@ -219,7 +219,7 @@ flowchart TD
 
     U -->|1. Upload resume| P[POST /api/profile/upload<br/>routes_profile.py]
     P --> ING[ingestion.py<br/>extract_resume_text<br/>PDF/DOCX/TXT/LaTeX]
-    ING --> S[(JSON store<br/>api/storage.py<br/>api/data/*.json)]
+    ING --> S[(JSON store<br/>backend/storage.py<br/>backend/data/*.json)]
     S --> CP[CareerProfile entity]
 
     U -->|2. Search jobs| D[POST /api/discovery/search<br/>routes_discovery.py]
@@ -248,7 +248,7 @@ flowchart TD
     U -->|6. Export| R[POST /api/rendering/versions/:id/<br/>txt|tex|pdf|docx<br/>routes_rendering.py]
     R --> RV
     R --> QA[PDF QA validation<br/>re-extract text]
-    R --> FILE[api/data/outputs/<br/>files on disk]
+    R --> FILE[backend/data/outputs/<br/>files on disk]
 
     U -->|7. Application packet| PK[POST /api/packets/<br/>routes_packets.py]
     PK --> JP
@@ -323,7 +323,7 @@ graph LR
 
 | Service | URL | Status |
 |---------|-----|--------|
-| FastAPI backend | `http://127.0.0.1:8765` | Running (`uvicorn api.main:app`) |
+| FastAPI backend | `http://127.0.0.1:8765` | Running (`uvicorn backend.main:app`) |
 | Health check | `GET /api/health` | `{"ok": true}` |
 | SPA static | `http://127.0.0.1:8766/index.html | Running (`python -m http.server`) |
 | OpenAPI docs | `http://127.0.0.1:8765/openapi.json` | 28 endpoints registered |

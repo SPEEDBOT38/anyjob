@@ -1,6 +1,6 @@
 """Simple JSON file storage for AnyJob backend entities.
 
-Each entity type is stored in its own JSON file under api/data/.
+Each entity type is stored in its own JSON file under backend/data/.
 This keeps the backend stateless-ish and mirrors the frontend's localStorage model.
 """
 

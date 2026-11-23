@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS job_postings (
+  id TEXT PRIMARY KEY,
+  source TEXT NOT NULL,
+  title TEXT NOT NULL,
+  company TEXT NOT NULL DEFAULT '',
+  location TEXT NOT NULL DEFAULT '',
+  description TEXT NOT NULL DEFAULT '',
+  source_url TEXT NOT NULL DEFAULT '',
+  posted_date TEXT,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS profiles (
+  id TEXT PRIMARY KEY,
+  full_name TEXT NOT NULL DEFAULT '',
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
