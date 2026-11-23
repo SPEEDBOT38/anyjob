@@ -6,8 +6,8 @@ const styles = {
   'ATS plain': {fontSize:11, lineHeight:1.1, color:'#000000'}
 };
 async function pdfReader(bytes) {
+  await import('pdfjs-dist/build/pdf.worker.mjs'); // bundled worker: runs on the main thread, no separate module file needed
   const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdf.worker.min.mjs', import.meta.url).href;
   const loadingTask = pdfjs.getDocument({data:bytes});
   const document = await loadingTask.promise;
   try {
