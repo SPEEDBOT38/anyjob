@@ -13,6 +13,8 @@ function Items({items}) {
       out.push(<ul key={i}>{list.map((t, k) => <li key={k}>{t}</li>)}</ul>);
     } else if (it.type === 'entry') {
       out.push(<div className="doc-entry" key={i}><b>{it.title}</b>{it.date && <span>{it.date}</span>}</div>);
+    } else if (it.type === 'subhead') {
+      out.push(<h5 className="doc-subhead" key={i}>{it.text}</h5>);
     } else if (it.type === 'sub') {
       out.push(<div className="doc-sub" key={i}>{it.text}</div>);
     } else if (it.type === 'chips') {

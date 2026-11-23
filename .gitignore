@@ -4,3 +4,4 @@ __pycache__/
 .env
 backend/data/
 anyjob-frontend-update.tar.gz
+anyjob-update-2.tar.gz

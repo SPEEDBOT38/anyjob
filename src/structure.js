@@ -1,3 +1,5 @@
+import {tidyJob} from './tidyJob';
+export {tidyJob};
 // Turn extracted CV and job-post text into structure so it can be shown as a clean document.
 const HEADINGS = 'summary|professional summary|profile|objective|career objective|about me|about|skills|technical skills|core skills|key skills|core competencies|competencies|experience|work experience|professional experience|employment history|work history|education|academic background|projects|certifications?|certificates|publications|achievements|awards|languages|interests|volunteer(?:ing)?(?: experience)?|references|highlights|training|courses';
 const CV_HEAD = new RegExp('^(?:' + HEADINGS + ')\\s*:?$', 'i');
@@ -21,7 +23,10 @@ function splitSections(lines, isHead) {
   let cur = null;
   for (const raw of lines) {
     const line = clean(raw);
-    if (line && !BULLET.test(line) && (isHead.test(line.replace(/[:：]$/, '')) || isHead.test(line) || isAllCaps(line))) {
+    if (/^##\s+\S/.test(line)) {
+      cur = {title: line.replace(/^##\s+/, ''), lines: []};
+      sections.push(cur);
+    } else if (line && !BULLET.test(line) && (isHead.test(line.replace(/[:：]$/, '')) || isHead.test(line) || isAllCaps(line))) {
       cur = {title: line.replace(/[:：]\s*$/, ''), lines: []};
       sections.push(cur);
     } else (cur ? cur.lines : head).push(line);
@@ -41,6 +46,8 @@ function blocks(lines, kind) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     if (!line) continue;
+    const sh = line.match(/^###\s+(.+)$/);
+    if (sh) { out.push({type: 'subhead', text: sh[1]}); continue; }
     const b = line.match(BULLET);
     if (b) { out.push({type: 'bullet', text: b[1]}); continue; }
     const next = lines.slice(i + 1).find(Boolean) || '';
@@ -93,7 +100,7 @@ export function parseCV(input) {
 }
 
 export function parseJob(input) {
-  const text = normalize(input);
+  const text = tidyJob(normalize(input));
   const lines = text.split('\n');
   const {head, sections} = splitSections(lines, JOB_HEAD);
   const intro = head.filter(Boolean);

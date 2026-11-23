@@ -9,7 +9,7 @@ export const methods = ['POST'];
 const ACTOR = 'valig~linkedin-jobs-scraper';
 
 async function linkedin(token, role, query, wanted) {
-  const url = `https://api.apify.com/v2/acts/${ACTOR}/run-sync-get-dataset-items?timeout=48&clean=true`;
+  const url = `https://api.apify.com/v2/acts/${ACTOR}/run-sync-get-dataset-items?timeout=30&clean=true`;
   const r = await fetch(url, {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
@@ -34,6 +34,51 @@ async function linkedin(token, role, query, wanted) {
     source_url: j.url || j.applyUrl || '',
     posted_date: j.postedDate || null,
   }));
+}
+
+// orgupdate/linkedin-jobs-scraper: LinkedIn listings by keyword + city + country. Free Apify plans get at most 10 per run.
+const ORGUPDATE = 'orgupdate~linkedin-jobs-scraper';
+const COUNTRY_CODE = { 'united states': 'usa', 'united kingdom': 'uk' };
+
+function ago(text) {
+  const m = /(\d+)\s*(minute|hour|day|week|month)/i.exec(text || '');
+  if (!m) return null;
+  const unit = { minute: 60e3, hour: 3600e3, day: 86400e3, week: 604800e3, month: 2592000e3 }[m[2].toLowerCase()];
+  return new Date(Date.now() - Number(m[1]) * unit).toISOString();
+}
+
+async function orgupdate(token, role, query, remoteOnly) {
+  const parts = String(query || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const country = (parts.length > 1 ? parts[parts.length - 1] : parts[0] || '').toLowerCase();
+  const input = {
+    includeKeyword: role,
+    locationName: remoteOnly ? 'Remote' : parts[0] || 'Remote',
+    countryName: remoteOnly || !country ? 'all' : COUNTRY_CODE[country] || country,
+    pagesToFetch: 1,
+    datePosted: 'month',
+  };
+  const url = `https://api.apify.com/v2/acts/${ORGUPDATE}/run-sync-get-dataset-items?timeout=40&clean=true`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  if (!r.ok) throw new Error('orgupdate ' + r.status);
+  const items = await r.json();
+  if (!Array.isArray(items)) throw new Error('orgupdate shape');
+  return items.map((j) => {
+    const link = String(j.URL || '').split('?')[0];
+    return {
+      id: 'linkedin:' + ((/(\d{6,})$/.exec(link) || [])[1] || link),
+      source: 'linkedin',
+      title: j.job_title || '',
+      company: j.company_name || '',
+      location: j.location || '',
+      description: stripHtml(j.description) || '',
+      source_url: link,
+      posted_date: ago(j.date),
+    };
+  });
 }
 
 async function remotive(role) {
@@ -97,12 +142,40 @@ export default async function (req, res) {
   let source = 'public boards';
   const problems = [];
 
+  // Strict filter: role words must appear in order in the title, and the job must be in the chosen place. Duplicates are dropped.
+  let roleMatched = 0;
+  const pick = (list) => {
+    roleMatched = 0;
+    const seen = new Set();
+    return list
+      .map((j) => ({ j, score: roleScore(j.title, role) }))
+      .filter((x) => x.score > 0 && /^https?:\/\//.test(x.j.source_url))
+      .filter((x) => {
+        roleMatched += 1;
+        if (remoteOnly) return x.j.source === 'remotive' || WORLDWIDE.test(x.j.location) || /remote/i.test(x.j.title);
+        return !match.length || locationMatches(withCountry(x.j.location), match);
+      })
+      .filter((x) => !seen.has(x.j.id) && seen.add(x.j.id))
+      .sort((a, b) => b.score - a.score || String(b.j.posted_date).localeCompare(String(a.j.posted_date)))
+      .map((x) => x.j)
+      .slice(0, wanted);
+  };
+
   if (token) {
     try {
-      raw = await linkedin(token, role, remoteOnly ? 'Remote' : query || 'Worldwide', wanted);
-      source = 'LinkedIn via Apify';
+      raw = await orgupdate(token, role, query, remoteOnly);
+      source = 'LinkedIn via Apify (OrgUpdate scraper)';
     } catch (e) {
-      problems.push('Apify search failed');
+      problems.push('OrgUpdate search failed');
+    }
+    // Free Apify plans cap that scraper at 10 results, so top up from a second LinkedIn scraper when few survive the strict filter.
+    if (pick(raw).length < Math.min(wanted, 5)) {
+      try {
+        raw = raw.concat(await linkedin(token, role, remoteOnly ? 'Remote' : query || 'Worldwide', wanted));
+        source = 'LinkedIn via Apify';
+      } catch (e) {
+        problems.push('Apify search failed');
+      }
     }
   }
   if (!raw.length) {
@@ -114,18 +187,7 @@ export default async function (req, res) {
     if (token) source = 'public boards (Apify returned nothing)';
   }
 
-  let roleMatched = 0;
-  const jobs = raw
-    .map((j) => ({ j, score: roleScore(j.title, role) }))
-    .filter((x) => x.score > 0 && /^https?:\/\//.test(x.j.source_url))
-    .filter((x) => {
-      roleMatched += 1;
-      if (remoteOnly) return x.j.source === 'remotive' || WORLDWIDE.test(x.j.location) || /remote/i.test(x.j.title);
-      return !match.length || locationMatches(withCountry(x.j.location), match);
-    })
-    .sort((a, b) => b.score - a.score || String(b.j.posted_date).localeCompare(String(a.j.posted_date)))
-    .map((x) => x.j)
-    .slice(0, wanted);
+  const jobs = pick(raw);
 
   for (const job of jobs) await saveJob(job);
 
