@@ -11,7 +11,7 @@ Find a job, check your fit, tailor your CV honestly and download a LaTeX resume.
 - **LaTeX templates**: Jake's Resume, Awesome CV, Deedy, ModernCV, AltaCV and McDowell CV (see `public/assets/latex/NOTICE.md` for sources, licences and changes). A CodeMirror LaTeX editor compiles on a real TeX Live server and points to errors by line.
 - **Export**: PDF (compiled LaTeX), Word, LaTeX project (.zip with class files) and plain text; cover letters written by AI from the tailored CV.
 
-AI runs through the Kilo AI gateway (`KILO_API_KEY`); the `kilo_model` setting defaults to the free router `kilo-auto/free`, and paid models fall back to it automatically when the account has no credits. PDFs are compiled by LaTeX-on-HTTP (latex.ytotech.com) with texlive.net as a fallback.
+AI runs through the Kilo AI gateway (`KILO_API_KEY`) on free models only: `kilo-auto/free` by default, `openrouter/free` as a backup. The `kilo_model` setting is used only when it names a free model (ending in `/free` or `:free`), so nothing is ever billed. PDFs are compiled by LaTeX-on-HTTP (latex.ytotech.com) with texlive.net as a fallback.
 
 ## Local Python backend (legacy)
 

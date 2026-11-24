@@ -17,5 +17,5 @@ description = "Your Apify API token (apify.com > Settings > API & Integrations).
 [[config]]
 name    = "kilo_model"
 type    = "text"
-label   = "Kilo model"
+label   = "Kilo model (free models only; paid model names are ignored)"
 default = "kilo-auto/free"
