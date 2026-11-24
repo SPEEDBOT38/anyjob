@@ -3,6 +3,7 @@ export {tidyJob};
 // Turn extracted CV and job-post text into structure so it can be shown as a clean document.
 const HEADINGS = 'summary|professional summary|profile|objective|career objective|about me|about|skills|technical skills|core skills|key skills|core competencies|competencies|experience|work experience|professional experience|employment history|work history|education|academic background|projects|certifications?|certificates|publications|achievements|awards|languages|interests|volunteer(?:ing)?(?: experience)?|references|highlights|training|courses';
 const CV_HEAD = new RegExp('^(?:' + HEADINGS + ')\\s*:?$', 'i');
+export const isCvHeading = line => CV_HEAD.test(String(line).trim());
 const JOB_HEAD = /^(?:about (?:the )?(?:role|job|position|team|us|company|you)|the role|role overview|overview|job (?:description|summary|overview)|position summary|(?:key |main |core )?responsibilities|what you(?:'|’)?ll do|what you will (?:do|bring|accomplish)|what we(?:'|’)?re looking for|what we offer|what you bring|who you are|requirements?|(?:required |minimum |basic |preferred |desired )?(?:qualifications?|skills(?: required)?|experience)|nice to have|good to have|bonus points|benefits|perks|why join us|how to apply|about the job|duties|your role|your profile|compensation|salary)\s*:?$/i;
 export const BULLET = /^\s*(?:[•\-*–—·▪●◦‣►✓]|\d{1,2}[.)])\s+(.*\S)\s*$/;
 const MONTH = '(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?';

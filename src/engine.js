@@ -1,12 +1,11 @@
-export const templates=['Classic','Modern','Compact','ATS plain'];
-export const statuses=['Checked','Sent','Interview','Offer','Closed'];
-export const defaults={template:'Classic',pageSize:'A4',tone:'Balanced',model:'gemini-3.1-flash-lite',locks:[],role:'',location:''};
+export const statuses=['Draft','Ready','Applied','Interview','Offer','Closed'];
+export const defaults={template:'jake',accent:'blue',pageSize:'A4',tone:'Balanced',provider:'Auto',model:'gemini-3.1-flash-lite',locks:[],role:'',location:''};
 const stop=new Set('a and the in of for we our are as will with to your you this that is an job work role must required experience using skills team looking hiring have at on be need preferred responsibilities requirements qualifications seeking years year'.split(' '));
 function terms(s){return new Set((s.toLowerCase().match(/[\p{L}\p{N}][\p{L}\p{N}+#.-]*/gu)||[]).map(x=>x.replace(/[.-]+$/,'')).filter(x=>x.length>1&&!stop.has(x)))}
 function overlap(a,b){return [...terms(a)].filter(t=>b.has(t))}
 export function assess(cv,jd){
   const lines=cv.split(/\n/).map(s=>s.trim()).filter(Boolean);
-  const requirements=jd.split(/\n|(?<=[.!?])\s+/).map(s=>s.trim()).filter(s=>terms(s).size&&s.length>=8);
+  const requirements=jd.split(/\n|(?<=[.!?])\s+/).map(s=>s.trim().replace(/^[-•*]\s+/,'')).filter(s=>!/^#{2,3}\s/.test(s)&&terms(s).size&&s.length>=8);
   const rows=requirements.map(requirement=>{
     const required=terms(requirement);
     const best=lines.map(line=>({line,words:overlap(line,required)})).sort((a,b)=>b.words.length-a.words.length)[0];

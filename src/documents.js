@@ -92,11 +92,12 @@ async function wordDocument(text,template,pageSize){
   }
   return Packer.toBlob(new Document({sections:[{properties:{page:{size,margin:{top:margin-120,bottom:margin-120,left:margin,right:margin}}},children:kids}]}));
 }
-export async function exportFile(record,format){
-  if(!record.approved || record.approved!==record.draft)throw Error('Approve this version before downloading.');
-  const content=record.approved;
-  if(format==='pdf')return validatedPDF(content,record.template,record.pageSize);
-  if(format==='docx')return wordDocument(content,record.template,record.pageSize);
-  if(format==='tex')return new Blob([latexDocument(content,record.template,record.pageSize)],{type:'text/plain;charset=utf-8'});
-  return new Blob([content],{type:'text/plain;charset=utf-8'});
+// Built-in layouts (no LaTeX service needed): the closest match for each LaTeX template.
+const BUILTIN={jake:'Classic',mcdowell:'Classic',moderncv:'Modern',awesome:'Modern',deedy:'Modern',altacv:'Modern',Classic:'Classic',Modern:'Modern',Compact:'Compact','ATS plain':'ATS plain'};
+export const builtinLayout=t=>BUILTIN[t]||'Classic';
+export async function builtinPDF(text,template,pageSize){return validatedPDF(text,builtinLayout(template),pageSize)}
+export async function wordFile(text,template,pageSize){return wordDocument(text,builtinLayout(template),pageSize)}
+export async function letterFile(text,name){
+  const {Document,Paragraph,TextRun,Packer}=await import('docx');
+  return Packer.toBlob(new Document({sections:[{properties:{page:{margin:{top:1200,bottom:1200,left:1300,right:1300}}},children:String(text).split(/\n/).map(line=>new Paragraph({spacing:{after:line.trim()?120:60},children:[new TextRun({text:line,font:'Calibri',size:23})]}))}]}));
 }

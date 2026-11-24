@@ -7,15 +7,15 @@ description = "Know your fit, fix your CV honestly. Paste your CV and a job post
 [[secret]]
 name        = "KILO_API_KEY"
 required    = false
-description = "Optional. Lets AnyJob use Kilo to rank existing CV lines by relevance to a job posting."
+description = "Kilo AI gateway key (app.kilo.ai). Powers fit analysis, tailoring suggestions, cover letters and CV clean-up."
 
 [[secret]]
 name        = "APIFY_API_TOKEN"
 required    = false
-description = "Optional. Lets AnyJob import jobs from an existing Apify dataset ID."
+description = "Your Apify API token (apify.com > Settings > API & Integrations). Turns on live LinkedIn job search for any city and lets AnyJob import jobs from an Apify dataset."
 
 [[config]]
 name    = "kilo_model"
 type    = "text"
 label   = "Kilo model"
-default = "kilo-auto"
+default = "kilo-auto/free"

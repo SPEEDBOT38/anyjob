@@ -1,79 +1,190 @@
-import React,{useState,useEffect,useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Feather,ArrowRight,ArrowLeft,Check,ShieldCheck,FileText,House,Plus,BriefcaseBusiness,Layers,Settings as Cog,Ellipsis,Search,Upload,LockKeyhole,ChevronRight,Menu,X,ScanText,BookOpen,LayoutTemplate,Download,Compass} from 'lucide-react';
+import {Feather, ArrowRight, FileText, House, Plus, BriefcaseBusiness, Layers, Settings as Cog, Search, LockKeyhole, Menu, X, ScanText, Sparkles, Target, Wand2, Code2, Compass, Loader2} from 'lucide-react';
 import '@fontsource/inter/latin-400.css';
 import '@fontsource/inter/latin-600.css';
 import '@fontsource/inter/latin-700.css';
 import './style.css';
-import {isHeading} from './latexLayout';
-import {ReviewTools} from './ReviewTools';
-import {assess,tailor,templates,statuses,defaults} from './engine';
-import {readCV,exportFile,validatedPDF} from './documents';
-import {RolePicker,LocationPicker,locationQuery} from './Pick';
-import {Extracted,ResumePaper,JobDocument} from './Preview';
+import {assess, defaults} from './engine';
 import {tidyJob} from './structure';
-import {suggestRole,findLocation} from './data';
+import {TEMPLATES, normalizeTemplate} from './templates';
+import {status as fetchStatus, ai, backend} from './api';
+import {go, link} from './ui';
+import {Application} from './Application';
+import {Onboarding, Home, Discover, NewApplication, Applications, MyCv, Templates, Settings} from './pages';
 
-const destinations=[['home','Home',House],['new','New application',Plus],['applications','Applications',BriefcaseBusiness],['resumes','Resumes',FileText],['templates','Templates',Layers],['settings','Settings',Cog]];
-const go=path=>{location.hash='/'+path};
-const path=()=>location.hash.replace(/^#\/?/,'')||'welcome';
-function load(){try{return JSON.parse(localStorage.getItem('anyjob.sky.v1'))||{}}catch{return {}}}
-const link=(to,text,kind='link')=><a className={kind} href={'#/'+to}>{text}</a>;
-function Brand(){return <a className="brand" href="#/welcome"><Feather/>AnyJob</a>}
-function Heading({title,children}){return <header className="page-head"><h1>{title}</h1>{children&&<p>{children}</p>}</header>}
-const privacy='Your saved CV stays on this device. Preparing with Kilo sends it and the job description through your local API to Kilo. Gemini sends them to Google. Choose Local in Settings for offline preparation.';
-const sample='Alex Morgan\nProduct Designer\nalex.morgan@email.com | +44 7700 900123 | linkedin.com/in/alexmorgan | London, UK\n\nSummary\nProduct designer with six years of experience shipping accessible mobile products.\n\nExperience\nProduct Designer, North Studio  Jan 2021 - Present\nLead Designer, Mobile\n• Designed accessible mobile interfaces used by 400k people.\n• Led usability research for account setup, cutting drop-off by 18%.\n\nEducation\nBSc Design, University of Leeds  2014 - 2017\n\nSkills\nDesign: Figma, prototyping, user research\nTools: HTML, CSS, SQL'
-function Paper({text=sample,template='Classic',mini=false}){return <ResumePaper text={text} template={template} mini={mini}/>}
-function Public({page,entered}){const target=entered?'home':'onboarding';const [menu,setMenu]=useState(false);const pages=<>{link('how','How it works')}{link('privacy','Privacy and trust')}{link(target,'Open app','secondary')}</>;return <div className="public"><header className="sitebar"><Brand/><nav>{pages}</nav><button className="mobile-only" onClick={()=>setMenu(!menu)} aria-expanded={menu} aria-label="Toggle navigation"><Menu/></button></header>{menu&&<nav className="menulist">{pages}</nav>}
-  <main>{page==='welcome'?<><section className="skyhero"><div className="pitch"><h1>Your next role starts with <em>your experience</em></h1><p>Compare a job with your CV, see the evidence behind your fit and prepare a resume you can stand behind.</p>{link(target,<>Open app <ArrowRight/></>,'primary')}<small><LockKeyhole/> Your resume is stored on this device</small></div><div className="mock"><div className="mockhead"><span><FileText/> Application preview</span><small>Example</small></div><h2>Product designer</h2><p>North Studio · Design team</p><hr/><div className="signal"><ScanText/><b>Requirement</b></div><blockquote>Experience designing accessible interfaces</blockquote><div className="signal green"><ShieldCheck/><b>Evidence from your CV</b></div><blockquote>“Designed accessible mobile interfaces.”</blockquote><span className="review-tag">Ready for your review</span></div></section><section className="landing-body"><h2>From a job post to a reviewed resume</h2><Steps/><details><summary>Do I need an API key?</summary><p>You can check keyword coverage, prepare and export locally. Configured Kilo credentials or a Gemini key enable AI-assisted bullet ordering.</p></details><details><summary>When is an application marked sent?</summary><p>When you change its status after submitting it yourself.</p></details></section></>:page==='how'?<section className="reading"><Heading title="How it works">Each application keeps its original CV, posting and approved document together.</Heading><Steps/>{link(target,'Open app','primary')}</section>:<section className="reading"><Heading title="Privacy and trust"/><h2>Your documents</h2><p>{privacy} Clearing this site's browser storage removes your saved workspace.</p><h2>Your key</h2><p>Your Gemini key stays in this tab’s session storage. Only Google receives it when you request AI assistance.</p><h2>Discovery and approval</h2><p>Searching boards sends your role and location to the discovery service. You review your resume before export and record submission yourself.</p>{link(target,'Open app','primary')}</section>}</main><footer><Brand/><span>AI does the fuzzy jobs. Code does the exact jobs. You decide.</span>{link('privacy','Privacy and trust')}</footer></div>}
-function Steps(){return <div className="steps">{[[FileText,'Add your CV','Save your master resume once and reuse it.'],[ScanText,'Check your fit','Compare each requirement with your experience.'],[ShieldCheck,'Tailor and approve','Review the draft, verify the PDF and download.']].map(([Icon,t,d])=><section key={t}><Icon/><h3>{t}</h3><p>{d}</p></section>)}</div>}
-function FileInput({onText,run}){async function read(file){if(file)await run('Reading your CV',async()=>onText(await readCV(file)))}return <label className="drop" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();read(e.dataTransfer.files[0])}}><Upload/> Upload your CV <small>PDF, DOCX or TXT</small><input type="file" aria-label="Upload your CV" accept=".pdf,.docx,.txt" onChange={e=>read(e.target.files[0])}/></label>}
-function App(){
- const initial=useRef(load()).current;
- const [db,setDb]=useState(()=>({entered:false,master:'',records:[],...initial,prefs:{...defaults,...initial.prefs}}));
- const [url,setUrl]=useState(path),[busy,loading]=useState(''),[message,notify]=useState(''),[menu,setMenu]=useState(false);
- const [cv,setCv]=useState(db.master),[jd,setJd]=useState(''),[master,setMaster]=useState(db.master),[label,setLabel]=useState(''),[filter,setFilter]=useState('All'),[tab,setTab]=useState('AI'),[key,setKey]=useState(()=>sessionStorage.getItem('anyjob.gemini')||''),[visible,showKey]=useState(false),[fmt,format]=useState('pdf'),[role,setRole]=useState(db.prefs.role&&db.prefs.role!=='Explore all roles'?db.prefs.role:'Software Engineer'),[area,setArea]=useState(findLocation(db.prefs.location)?db.prefs.location:''),[found,results]=useState(null),[searchNote,setSearchNote]=useState('');
- const [importable,setImportable]=useState(null),[source,setSource]=useState(null);
- const backend=window.ANYJOB_API_BASE||(location.origin==='http://127.0.0.1:8129'?'http://127.0.0.1:8130':location.origin);
- const [services,setServices]=useState({kilo:false,apify:false}),[dataset,setDataset]=useState('');
- useEffect(()=>{let active=true;fetch(backend+'/api/providers/status',{signal:AbortSignal.timeout(3000)}).then(r=>r.ok?r.json():{}).then(s=>{if(active)setServices(s)}).catch(()=>{});return()=>{active=false}},[backend]);
- const [page,id,stage]=url.split('/'),prefs=db.prefs,record=db.records.find(x=>x.id===id);
- const provider=prefs.provider||(key?'Gemini':services.kilo?'Kilo':'Local');
- const dialog=useRef(null),inFlight=useRef(false),live=useRef(db);
- function persist(changes){const next={...live.current,...changes};localStorage.setItem('anyjob.sky.v1',JSON.stringify(next));live.current=next;setDb(next)}
- function updatePrefs(p){persist({prefs:{...live.current.prefs,...p}})}
- function changeRecord(r,changes){persist({records:live.current.records.map(x=>x.id===r.id?{...x,...changes}:x)})}
- useEffect(()=>{const route=()=>{setUrl(path());setMenu(false);notify('');window.scrollTo(0,0)};window.addEventListener('hashchange',route);return()=>window.removeEventListener('hashchange',route)},[]);
- useEffect(()=>{document.title=(page==='welcome'?'Your job search workspace':page[0].toUpperCase()+page.slice(1))+' · AnyJob';if(menu)dialog.current?.showModal()},[url,menu]);
- async function run(stage,fn){if(inFlight.current)return;inFlight.current=true;loading(stage);notify('');try{await fn()}catch(e){notify(e.message||'Could not complete the action. Try again.')}finally{loading('');inFlight.current=false}}
- const act=(name,fn,kind='secondary')=><button className={kind} disabled={!!busy} onClick={()=>run(name,fn)}>{name}</button>;
- const newLink=link('new',<>New application <Plus/></>,'primary');
- const publicPage=['welcome','privacy','how'].includes(page);
- function check(){if(cv.trim().length<20||jd.trim().length<20)throw Error('Add at least 20 characters of CV text and job requirements.');const r={id:crypto.randomUUID(),title:label.trim()||jd.trim().split('\n')[0].slice(0,80),cv:cv.trim(),jd:jd.trim(),source:source&&tidyJob(source.description||'')===jd?source.source_url:null,fit:assess(cv,jd),status:'Checked',date:new Date().toISOString(),template:prefs.template,pageSize:prefs.pageSize};persist({entered:true,records:[r,...db.records]});go('application/'+r.id+'/fit')}
- function records(items){return items.length?<ul className="rows">{items.map(r=><li key={r.id}>{link('application/'+r.id+'/'+(r.approved?'export':r.draft?'tailor':'fit'),<><span className="ring">{r.fit.score}%</span><span><b>{r.title}</b><small>{r.status} · {new Date(r.date).toLocaleDateString()}</small></span><ChevronRight/></>,'record')}</li>)}</ul>:<div className="empty"><BriefcaseBusiness/><p>{filter==='All'?'Your checked jobs will appear here.':'No applications at this stage.'}</p>{link('new','Check a job')}</div>}
- function stepper(n){return <ol className="stepper">{['Add','Fit','Tailor','Approve','Export'].map((s,i)=><li key={s} aria-current={i===n?'step':undefined} className={i<=n?'done':''}>{i<n?<Check/>:<b>{i+1}</b>}{s}</li>)}</ol>}
- function application(){
-  if(!record)return missing();const r=record;const effective=r.approved&&stage==='export'?'export':stage==='approve'&&r.draft?'approve':stage==='tailor'&&r.draft?'tailor':'fit';
-  return <>{link('applications',<> <ArrowLeft/> Applications</>)}<Heading title={r.title}/>{stepper(['fit','tailor','approve','export'].indexOf(effective)+1)}
-  {effective==='fit'?<><div className="panel"><span className="ring large">{r.fit.score}%</span><h2>Keyword coverage</h2><p>Shared terms indicate possible evidence. Review qualifications and eligibility yourself.</p><div className="table">{r.fit.rows.map((row,i)=><section key={i}><b>{row.requirement}</b><p>{row.evidence||'No matching terms in your CV.'}</p>{row.words.length>0&&<small>Shared terms · {row.words.join(', ')}</small>}</section>)}</div></div><p>Preparation provider: <b>{provider}</b>. {provider==='Local'?'Processing stays in your browser.':'Preparing sends your CV and the job post to this provider.'} {link('settings','Change provider')}</p>{act('Prepare draft',async()=>{const draft=await tailor(r,prefs,key,provider,backend);changeRecord(r,{draft,approved:null,method:provider,template:prefs.template,pageSize:prefs.pageSize});go('application/'+id+'/tailor')},'primary')}</>:effective==='tailor'?<><div className="split"><div><h2>Your draft</h2><Paper text={r.draft} template={r.template}/></div><aside className="panel"><ShieldCheck/><h2>Review changes</h2><p>{r.method} ordering uses the original CV lines. {r.draft===r.cv?'The original ordering was retained.':'Relevant bullets have moved within their original groups.'}</p><details><summary>Compare with original</summary><pre>{r.cv}</pre></details><p>{r.template} · {r.pageSize}</p>{link('application/'+id+'/approve','Review approval','primary')}</aside></div></>:effective==='approve'?<div className="panel"><h2>Approve this resume</h2><p>Confirm these statements reflect your experience. AnyJob checks the PDF text against this draft before enabling downloads.</p><Paper text={r.draft} template={r.template}/>{act('Approve resume',async()=>{await validatedPDF(r.draft,r.template,r.pageSize);changeRecord(r,{approved:r.draft});go('application/'+id+'/export')},'decision')}</div>:<div className="panel"><ShieldCheck/><h2>Approved for export</h2><p>PDF text verified · {r.template} · {r.pageSize}</p><label>File format<select value={fmt} onChange={e=>format(e.target.value)}>{['pdf','docx','tex','txt'].map(x=><option key={x} value={x}>{x.toUpperCase()}</option>)}</select></label>{act('Download resume',async()=>{const blob=await exportFile(r,fmt),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=r.title.replace(/[^\p{L}\p{N}_-]/gu,'_').slice(0,70)+'.'+fmt;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)},'decision')}</div>}
-  {effective==='tailor'&&<ReviewTools key={r.id} record={r} locks={prefs.locks} save={changes=>{changeRecord(r,changes);notify('Application materials saved.')}}/>}
-  {effective==='export'&&r.letter&&<details><summary>Cover letter</summary><pre>{r.letter}</pre></details>}
-  <div className="panel"><label>Application status<select value={r.status} onChange={e=>changeRecord(r,{status:e.target.value})}>{statuses.map(x=><option key={x}>{x}</option>)}</select></label><details><summary>Saved job post</summary><JobDocument text={r.jd} title={r.title}/></details></div></>
- }
- function missing(){return <><Heading title="Page unavailable">This link may belong to another browser or workspace.</Heading>{link('home','Return home','primary')}</>}
- function screen(){switch(page){
- case 'onboarding':return <><Heading title="Set up your workspace">Choose a target role. You can upload a resume now or add it when you check a job.</Heading><div className="panel"><RolePicker label="Target role" value={role} onChange={setRole}/><LocationPicker label="Where do you want to work?" value={area} onChange={setArea}/><FileInput run={run} onText={t=>{setMaster(t);const g=suggestRole(t);if(g)setRole(g)}}/><Extracted kind="cv" value={master} onChange={setMaster} label="CV text" placeholder="Paste your CV text…"/><p className="hint">{privacy}</p>{act('Enter workspace',()=>{persist({entered:true,master:master.trim(),prefs:{...prefs,role,location:area}});setCv(master.trim());go('home')},'primary')}</div></>;
- case 'home':return <><Heading title={'Good '+(new Date().getHours()<12?'morning':new Date().getHours()<18?'afternoon':'evening')}>Pick up where you left off.</Heading><section className="banner"><div><h2>Have a job in mind?</h2><p>Bring the posting. Compare it with your experience before you apply.</p>{newLink}</div><Feather/></section><div className="split"><section><h2>Recent applications</h2>{records(db.records.slice(0,5))}</section><aside><h2>Workspace checklist</h2><div className="panel checklist">{[['settings','Review preparation provider',key],['resumes','Save a master resume',db.master],['new','Check your first job',db.records.length]].map(([p,t,v])=><a href={'#/'+p} key={p}>{v?<Check/>:<ChevronRight/>}{t}</a>)}</div>{link('discover',<>Explore job boards <ArrowRight/></>)}</aside></div></>;
- case 'new':return <><Heading title="New application">Check the posting against your own experience.</Heading>{stepper(0)}<div className="split equal"><section className="panel"><h2>Your CV</h2><FileInput run={run} onText={setCv}/><Extracted kind="cv" value={cv} onChange={setCv} label="CV text" placeholder="Paste your CV text…"/>{db.master&&<button onClick={()=>setCv(db.master)}>Use master resume</button>}</section><section className="panel"><h2>The job post</h2><label>Role and company (optional)<input value={label} onChange={e=>setLabel(e.target.value)}/></label><Extracted kind="job" value={jd} onChange={setJd} label="Job description" placeholder="Paste the responsibilities and requirements…" meta={source&&tidyJob(source.description||'')===jd?{title:source.title,company:source.company,location:source.location,url:source.source_url}:{title:label.trim()}}/>{link('discover','Explore job boards')}</section></div><p className="hint">{privacy}</p>{act('Check my fit',check,'primary')}</>;
- case 'discover':return <><Heading title="Discover jobs">Pick a role and a location. Results only include jobs with that role in the title and in that place. Only these two choices go to the discovery service.</Heading><div className="panel"><RolePicker value={role} onChange={setRole}/><LocationPicker value={area} onChange={setArea}/>{act('Search jobs',async()=>{if(!role)throw Error('Choose a role to search.');let response;try{response=await fetch(backend+'/api/discovery/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role,query:role,location:locationQuery(area)}),signal:AbortSignal.timeout(60000)})}catch{throw Error('Discovery service unavailable. Start the local API or paste a job in New application.')}if(!response.ok)throw Error('The job board could not complete this search. Try again or paste the posting.');const data=await response.json();setSearchNote(data.note||'');results(data.jobs||[]);updatePrefs({role,location:area})},'primary')}</div><details><summary>Import an Apify job dataset</summary><label>Dataset ID<input value={dataset} onChange={e=>setDataset(e.target.value.trim())}/></label>{act('Import job listings',async()=>{if(!dataset)throw Error('Enter the ID of an existing job dataset.');const response=await fetch(backend+'/api/providers/apify/jobs/'+encodeURIComponent(dataset));if(!response.ok)throw Error('Check the dataset ID, local API and Apify permissions.');results((await response.json()).jobs)})}</details>{found?.length===0&&<p>{searchNote||'No jobs found. Try a broader role or location.'}</p>}{found?.map(j=><section className="panel" key={j.id}><h2>{j.title}</h2><p>{j.company} · {j.location}</p>{/^https?:\/\//i.test(j.source_url||'')&&<a className="link" target="_blank" rel="noreferrer" href={j.source_url}>Original posting</a>} <button onClick={()=>{setSource(j);setLabel(j.title+' · '+j.company);setJd(tidyJob(j.description||''));go('new')}}>Use this job</button></section>)}{act('Load saved jobs',async()=>{let response;try{response=await fetch(backend+'/api/discovery/jobs',{signal:AbortSignal.timeout(6000)})}catch{throw Error('Start the local discovery API to load saved postings.')}if(!response.ok)throw Error('Could not load saved jobs.');results(await response.json())})} {link('new','Paste a job post')}</>;
- case 'applications':return <><Heading title="Your applications">Track the version you prepared and the stage you reached.</Heading><div className="chips">{['All',...statuses].map(s=><button aria-pressed={filter===s} onClick={()=>setFilter(s)} key={s}>{s} · {db.records.filter(r=>s==='All'||s===r.status).length}</button>)}</div>{records(db.records.filter(r=>filter==='All'||r.status===filter))}</>;
- case 'application':return application();
- case 'studio':case 'resumes':return <><Heading title="Your resumes">Keep one master CV and the approved version for each application.</Heading><section className="panel"><h2>Master resume</h2><details><summary>Import an earlier AnyJob profile</summary><p>Read a profile from your local AnyJob backend, review it below, then save a browser copy.</p>{act('Find local profiles',async()=>{try{const res=await fetch(backend+'/api/profile/profiles',{signal:AbortSignal.timeout(6000)});if(!res.ok)throw Error();setImportable(await res.json())}catch{throw Error('Start the local AnyJob API or upload your original resume.')}})}{importable?.length===0&&<p>No profiles found.</p>}{importable?.map(p=><button key={p.id} onClick={()=>setMaster(p.source_resume_text||[p.full_name,p.headline,p.email,p.summary,...(p.experience||[]).flatMap(e=>[e.title,e.org,e.dates,...(e.bullets||[])]),...(p.skills||[]).map(s=>s.name),...(p.education||[]).map(e=>[e.degree,e.institution,e.dates].join(' '))].filter(Boolean).join('\n'))}>{p.full_name||'Unnamed profile'}</button>)}</details><FileInput run={run} onText={setMaster}/><Extracted kind="cv" value={master} onChange={setMaster} label="CV text" placeholder="Paste your CV text…"/><p className="hint">{privacy}</p>{act('Save master resume',()=>{if(!master.trim())throw Error('Upload a file or paste your CV first.');persist({master:master.trim()});setCv(master.trim());notify('Master resume saved.')},'primary')} <button onClick={()=>{setCv(master);go('new')}}>Use for new application</button></section><h2>Tailored versions</h2>{records(db.records.filter(r=>r.approved))}</>;
- case 'templates':return <><Heading title="Resume templates">Previewed with sample text. Choose the layout for your next draft. The PDF, Word and LaTeX files all use the same layout, based on <a href="https://github.com/jakegut/resume" target="_blank" rel="noreferrer">Jake’s Resume</a> LaTeX template.</Heading><div className="gallery">{templates.map((t,i)=><article className={'template '+(prefs.template===t?'selected':'')} key={t}><div className="mount"><Paper template={t} mini/></div><div className="caption"><h2>{t}</h2><p>{['Jake’s Resume layout · serif type, centered name, ruled section headings.','Same structure in a clean sans-serif with blue headings.','Smaller type for longer career histories.','Plain single column with no rules, for strict ATS parsers.'][i]}</p><button aria-pressed={prefs.template===t} onClick={()=>updatePrefs({template:t})}>{prefs.template===t?'Default template':'Make default'}</button></div></article>)}</div></>;
- case 'settings':return <><Heading title="Settings">Choose how AnyJob prepares your applications.</Heading><div className="settings"><div className="tablist" aria-label="Settings sections">{['AI','Resume','Safety','Privacy'].map(x=><button aria-pressed={x===tab} onClick={()=>setTab(x)} key={x}>{x}</button>)}</div><section className="panel"><h2>{tab}</h2>{tab==='AI'?<><label>Preparation provider<select value={provider} onChange={e=>updatePrefs({provider:e.target.value})}><option>Kilo</option><option>Gemini</option><option>Local</option></select></label><p>Kilo server key: {services.kilo?'configured':'unavailable'} · Apify server token: {services.apify?'configured':'unavailable'}</p><label>Gemini API key<input autoComplete="off" value={key} type={visible?'text':'password'} onChange={e=>{setKey(e.target.value);sessionStorage.setItem('anyjob.gemini',e.target.value)}}/></label><button aria-pressed={visible} onClick={()=>showKey(!visible)}>{visible?'Hide key':'Show key'}</button><p className="hint">Stored for this tab’s session. Used when Gemini is selected.</p><label>Gemini model<input value={prefs.model} onChange={e=>updatePrefs({model:e.target.value})}/></label><label>Writing preference<select value={prefs.tone} onChange={e=>updatePrefs({tone:e.target.value})}>{['Concise','Balanced','Bold'].map(x=><option key={x}>{x}</option>)}</select></label></>:tab==='Resume'?<><label>Default template<select value={prefs.template} onChange={e=>updatePrefs({template:e.target.value})}>{templates.map(t=><option key={t}>{t}</option>)}</select></label><label>Page size<select value={prefs.pageSize} onChange={e=>updatePrefs({pageSize:e.target.value})}><option>A4</option><option>Letter</option></select></label><fieldset><legend>Keep section order locked</legend>{['Header','Summary','Skills','Experience','Education'].map(x=><label className="check" key={x}><input type="checkbox" checked={prefs.locks.includes(x)} onChange={e=>updatePrefs({locks:e.target.checked?[...prefs.locks,x]:prefs.locks.filter(y=>x!==y)})}/>{x}</label>)}</fieldset></>:tab==='Safety'?<><ShieldCheck/><h3>Truth guard is on</h3><p>Preparation reorders existing bullets within their original groups. You approve the PDF-verified draft before exporting.</p></>:<><p>{privacy}</p>{link('privacy','Read privacy and trust')}</>}</section></div></>;
- default:return missing()}}
- const navItem=([p,t,Icon])=><a key={p} href={'#/'+p} aria-current={page===p||page==='application'&&p==='applications'?'page':undefined}><Icon/><span>{t}</span>{p==='applications'&&<small>{db.records.length}</small>}</a>;
- return publicPage?<Public key={page} page={page} entered={db.entered}/>:<div className="workspace"><aside className="rail"><Brand/><nav>{destinations.map(navItem)}</nav><a className="keystate" href="#/settings"><LockKeyhole/><span>{provider} preparation<small>{provider==='Gemini'?prefs.model:provider==='Kilo'?'Server configuration':'On this device'}</small></span></a></aside><main className="canvas"><div className="topline"><span>Workspace</span><ChevronRight/>{destinations.find(x=>x[0]===page)?.[1]||({'application':'Application detail','onboarding':'Getting started','discover':'Discover jobs'}[page]||'Page')}</div>{screen()}<footer className="appfoot">{link('privacy','Privacy and trust')}</footer></main><nav className="bottom">{[destinations[0],destinations[2],['new','New',Plus],destinations[3]].map(navItem)}<button onClick={()=>setMenu(true)}><Ellipsis/>More</button></nav>{menu&&<dialog ref={dialog} onCancel={()=>setMenu(false)}><button aria-label="Close menu" onClick={()=>setMenu(false)}><X/></button>{destinations.slice(4).map(navItem)}</dialog>}{(message||busy)&&<div role="status" className="notice">{busy?busy+'…':message}{!busy&&<button aria-label="Dismiss message" onClick={()=>notify('')}><X/></button>}</div>}</div>
+const KEY = 'anyjob.sky.v1';
+const NAV = [['home', 'Home', House], ['jobs', 'Find jobs', Search], ['applications', 'Applications', BriefcaseBusiness], ['cv', 'My CV', FileText], ['templates', 'Templates', Layers], ['settings', 'Settings', Cog]];
+const STATUS_MAP = {Checked: 'Draft', Sent: 'Applied'};
+
+function load() {
+  let d = {};
+  try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { d = {}; }
+  const prefs = {...defaults, ...(d.prefs || {})};
+  prefs.template = normalizeTemplate(prefs.template);
+  if (prefs.provider === 'Kilo' || prefs.provider === 'Gemini') prefs.provider = 'Auto';
+  const records = (d.records || []).map(r => ({
+    ...r,
+    status: STATUS_MAP[r.status] || r.status || 'Draft',
+    template: normalizeTemplate(r.template || prefs.template),
+    accent: r.accent || prefs.accent,
+    pageSize: r.pageSize || prefs.pageSize,
+    draft: r.draft || r.cv,
+    approved: !!r.approved,
+    fit: r.fit || {rows: [], score: 0},
+    aiFitPending: false,
+  }));
+  return {entered: false, master: '', ...d, prefs, records};
 }
-createRoot(document.getElementById('root')).render(<App/>);
+const path = () => location.hash.replace(/^#\/?/, '') || 'welcome';
 
+function Brand() { return <a className="brand" href="#/welcome"><span className="logo-mark"><Feather/></span>AnyJob</a>; }
+
+function Public({page, entered}) {
+  const target = entered ? 'home' : 'onboarding';
+  const [menu, setMenu] = useState(false);
+  const links = <>{link('how', 'How it works')}{link('privacy', 'Privacy')}{link(target, entered ? 'Open app' : 'Get started', 'primary small')}</>;
+  return <div className="public">
+    <header className="sitebar"><Brand/><nav className="desktop-only">{links}</nav><button className="icon mobile-only" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-label="Menu">{menu ? <X/> : <Menu/>}</button></header>
+    {menu && <nav className="menulist">{links}</nav>}
+    <main>{page === 'welcome' ? <>
+      <section className="hero">
+        <div className="hero-copy">
+          <span className="eyebrow"><Sparkles/>AI that never invents your experience</span>
+          <h1>Find the job. <em>Fit the resume.</em> Send it today.</h1>
+          <p>Search live LinkedIn jobs by role and city, see exactly how your CV matches, tailor it with honest AI edits, and download a beautiful LaTeX resume.</p>
+          <div className="row">{link(target, <>{entered ? 'Open your workspace' : 'Start free'}<ArrowRight/></>, 'primary big')}{link('how', 'See how it works', 'secondary big')}</div>
+          <small className="trust"><LockKeyhole/>Your CV stays in your browser. No account needed.</small>
+        </div>
+        <div className="hero-art" aria-hidden="true">
+          <img className="sheet s1" src="/assets/templates/awesome.jpg" alt=""/>
+          <img className="sheet s2" src="/assets/templates/jake.jpg" alt=""/>
+          <div className="float-card fc1"><Target/><b>86% fit</b><small>Frontend Developer · Bengaluru</small></div>
+          <div className="float-card fc2"><Wand2/><b>3 edits accepted</b><small>Same facts, sharper wording</small></div>
+        </div>
+      </section>
+      <section className="features">
+        {[[Compass, 'Live jobs that match', 'LinkedIn, Remotive and Arbeitnow, filtered to your exact role and city.'], [ScanText, 'Honest fit check', 'Requirement-by-requirement evidence from your own CV, plus AI strengths and gaps.'], [Wand2, 'Tailor without lying', 'AI suggests sharper bullets and a summary. Every number must already be in your CV.'], [Code2, 'Real LaTeX resumes', "Jake's Resume, Awesome CV, Deedy, ModernCV, AltaCV and McDowell, compiled with TeX Live."]].map(([Icon, t, d]) => <article key={t}><Icon/><h3>{t}</h3><p>{d}</p></article>)}
+      </section>
+      <section className="showcase">
+        <h2>Six proven templates, one click apart</h2>
+        <div className="showcase-strip">{TEMPLATES.map(t => <figure key={t.id}><img src={'/assets/templates/' + t.id + '.jpg'} alt={t.name} loading="lazy"/><figcaption><b>{t.name}</b><span>{t.bestFor[0]}</span></figcaption></figure>)}</div>
+      </section>
+      <Steps/>
+    </> : page === 'how' ? <section className="reading"><h1>How AnyJob works</h1><Steps/><p>{link(target, 'Get started', 'primary')}</p></section> : <section className="reading">
+      <h1>Privacy and trust</h1>
+      <h2>Your documents</h2><p>Your CV, applications and cover letters are saved in this browser only (local storage). Clearing site data or using Settings → Erase everything removes them.</p>
+      <h2>When data leaves your browser</h2><p>Job searches send only the role and location you pick. AI buttons send your CV and the job post to the Kilo AI gateway to produce that one answer. Compiling a PDF sends the LaTeX source of your resume to a public TeX Live service (latex.ytotech.com, or texlive.net as a backup). You can turn AI off in Settings.</p>
+      <h2>Truth guard</h2><p>AI suggestions may only rephrase what your CV says. Rewrites that introduce numbers not found in your CV are dropped, and nothing changes until you accept it. You confirm the final resume before downloading.</p>
+      <p>{link(target, 'Open app', 'primary')}</p>
+    </section>}</main>
+    <footer className="sitefoot"><Brand/><span>AI does the fuzzy jobs. Code does the exact jobs. You decide.</span>{link('privacy', 'Privacy')}</footer>
+  </div>;
+}
+
+function Steps() {
+  return <section className="steps">{[[Search, '1. Find a job', 'Pick a role and a city from the lists, or paste any job post.'], [Target, '2. Check your fit', 'See which requirements your CV proves and which it misses.'], [Wand2, '3. Tailor honestly', 'Accept or skip each AI edit. Edit anything yourself.'], [FileText, '4. Design & download', 'Choose a LaTeX template, preview the exact PDF, download PDF, Word or LaTeX.']].map(([Icon, t, d]) => <article key={t}><Icon/><h3>{t}</h3><p>{d}</p></article>)}</section>;
+}
+
+function App() {
+  const [db, setDb] = useState(load);
+  const live = useRef(db);
+  const [url, setUrl] = useState(path);
+  const [busy, setBusy] = useState('');
+  const [message, setMessage] = useState('');
+  const [services, setServices] = useState({kilo: false, apify: false});
+  const [lastSearch, setLastSearch] = useState(null);
+  const [draftJob, setDraftJob] = useState(null);
+  const [menu, setMenu] = useState(false);
+  const inFlight = useRef(false);
+
+  useEffect(() => { fetchStatus().then(setServices); }, []);
+  useEffect(() => {
+    const route = () => { setUrl(path()); setMenu(false); window.scrollTo(0, 0); };
+    window.addEventListener('hashchange', route);
+    return () => window.removeEventListener('hashchange', route);
+  }, []);
+  useEffect(() => { if (!message) return; const h = setTimeout(() => setMessage(''), 7000); return () => clearTimeout(h); }, [message]);
+
+  function persist(changes) {
+    const next = {...live.current, ...changes};
+    try { localStorage.setItem(KEY, JSON.stringify(next)); } catch { setMessage('Your browser storage is full; recent changes may not be saved.'); }
+    live.current = next;
+    setDb(next);
+  }
+  const updatePrefs = p => persist({prefs: {...live.current.prefs, ...p}});
+  const changeById = (id, changes) => persist({records: live.current.records.map(x => (x.id === id ? {...x, ...changes} : x))});
+  const changeRecord = (r, changes) => changeById(r.id, changes);
+  const removeRecord = r => persist({records: live.current.records.filter(x => x.id !== r.id)});
+  async function run(label, fn) {
+    if (inFlight.current) return;
+    inFlight.current = true; setBusy(label); setMessage('');
+    try { await fn(); } catch (e) { setMessage(e.message || 'Something went wrong. Try again.'); } finally { setBusy(''); inFlight.current = false; }
+  }
+  const prefs = db.prefs;
+  const aiOn = services.kilo && prefs.provider !== 'Local';
+
+  function createRecord({cv, jd, title, company, location, url: jobUrl}) {
+    let fit;
+    try { fit = assess(cv, jd); } catch { fit = {rows: [], score: 0}; }
+    const firstLine = jd.split('\n').find(l => l.trim()) || 'New application';
+    const r = {id: crypto.randomUUID(), title: [title || firstLine.slice(0, 70), company].filter(Boolean).join(' · '), role: title || '', company: company || '', location: location || '', url: jobUrl || '', cv, jd, draft: cv, fit, status: 'Draft', date: new Date().toISOString(), template: live.current.prefs.template, accent: live.current.prefs.accent, pageSize: live.current.prefs.pageSize, approved: false, aiFitPending: aiOn};
+    persist({entered: true, records: [r, ...live.current.records]});
+    setDraftJob(null);
+    go('application/' + r.id + '/fit');
+    if (aiOn) ai('fit', {cv, jd}).then(aiFit => changeById(r.id, {aiFit, aiFitPending: false})).catch(() => changeById(r.id, {aiFitPending: false}));
+  }
+  function startFromJob(j) {
+    const jd = tidyJob(j.description || '');
+    if (live.current.master && jd.length > 40) createRecord({cv: live.current.master, jd, title: j.title, company: j.company, location: j.location, url: j.source_url});
+    else { setDraftJob(j); go('new'); if (!live.current.master) setMessage('Add your CV to start this application.'); }
+  }
+
+  const ctx = {db, prefs, persist, updatePrefs, changeRecord, removeRecord, createRecord, startFromJob, run, notify: setMessage, services, aiOn, backend, lastSearch, setLastSearch, draftJob};
+  const [page, id, tab] = url.split('/');
+  useEffect(() => { document.title = ({welcome: 'Find the job, fit the resume', jobs: 'Find jobs', cv: 'My CV'}[page] || (page || '').replace(/^./, c => c.toUpperCase())) + ' · AnyJob'; }, [page]);
+
+  if (['welcome', 'how', 'privacy'].includes(page)) return <Public page={page} entered={db.entered}/>;
+  const record = db.records.find(x => x.id === id);
+  let screen;
+  switch (page) {
+    case 'onboarding': screen = <Onboarding ctx={ctx}/>; break;
+    case 'home': screen = <Home ctx={ctx}/>; break;
+    case 'jobs': case 'discover': screen = <Discover ctx={ctx}/>; break;
+    case 'new': screen = <NewApplication key={draftJob ? draftJob.id : 'new'} ctx={ctx}/>; break;
+    case 'applications': screen = <Applications ctx={ctx}/>; break;
+    case 'application': screen = record ? <Application key={record.id} r={record} tab={tab} ctx={ctx}/> : <Missing/>; break;
+    case 'cv': case 'resumes': screen = <MyCv ctx={ctx}/>; break;
+    case 'templates': screen = <Templates ctx={ctx}/>; break;
+    case 'settings': screen = <Settings ctx={ctx}/>; break;
+    default: screen = <Missing/>;
+  }
+  const current = page === 'application' ? 'applications' : page === 'discover' ? 'jobs' : page === 'resumes' ? 'cv' : page;
+  const navItem = ([p, t, Icon]) => <a key={p} href={'#/' + p} aria-current={current === p ? 'page' : undefined}><Icon/><span>{t}</span>{p === 'applications' && db.records.length > 0 && <small>{db.records.length}</small>}</a>;
+  return <div className={'workspace page-' + page}>
+    <aside className="rail">
+      <Brand/>
+      <a className="primary new-btn" href="#/new"><Plus/>New application</a>
+      <nav>{NAV.map(navItem)}</nav>
+      <div className="rail-status">
+        <span className={aiOn ? 'on' : ''}><Sparkles/>AI {aiOn ? 'ready' : 'off'}</span>
+        <span className={services.apify ? 'on' : ''}><Search/>LinkedIn {services.apify ? 'ready' : 'off'}</span>
+      </div>
+    </aside>
+    <header className="topbar mobile-only"><Brand/><button className="icon" onClick={() => setMenu(true)} aria-label="More"><Menu/></button></header>
+    <main className="canvas">{screen}</main>
+    <nav className="bottom mobile-only">
+      {[NAV[0], NAV[1]].map(navItem)}
+      <a href="#/new" className="fab" aria-label="New application"><Plus/></a>
+      {[NAV[2], NAV[3]].map(navItem)}
+    </nav>
+    {menu && <div className="sheet-menu" onClick={e => { if (e.target === e.currentTarget) setMenu(false); }}><nav><button className="icon" onClick={() => setMenu(false)} aria-label="Close"><X/></button>{NAV.map(navItem)}{link('privacy', 'Privacy and trust')}</nav></div>}
+    {(busy || message) && <div role="status" className="toast">{busy ? <><Loader2 className="spin"/>{busy}…</> : message}{!busy && <button className="icon" aria-label="Dismiss" onClick={() => setMessage('')}><X/></button>}</div>}
+  </div>;
+}
+
+function Missing() {
+  return <div className="empty"><Compass/><h3>Page not found</h3><p>This link may belong to another browser.</p>{link('home', 'Go home', 'primary')}</div>;
+}
+
+createRoot(document.getElementById('root')).render(<App/>);
