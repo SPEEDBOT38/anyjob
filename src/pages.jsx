@@ -61,7 +61,7 @@ export function Home({ctx}) {
         <a className="cta-card" href="#/jobs"><Search/><div><b>Jobs for you</b><span>{ctx.prefs.role || 'Pick a role'}{ctx.prefs.location ? ' · ' + (findLocation(ctx.prefs.location) || {label: ''}).label : ''}</span></div><ArrowRight/></a>
         <div className="panel checklist">
           <h3>Your setup</h3>
-          {[['cv', 'Master CV saved', !!ctx.db.master], ['templates', 'Template: ' + templateById(ctx.prefs.template).name, true], ['settings', ctx.aiOn ? 'AI assistant ready' : 'AI assistant off', ctx.aiOn], ['jobs', ctx.services.apify ? 'LinkedIn search ready' : 'LinkedIn search needs a token', !!ctx.services.apify]].map(([p, t, ok]) => <a key={p} href={'#/' + p} className={ok ? 'ok' : ''}>{ok ? <CircleCheck/> : <Target/>}{t}</a>)}
+          {[['cv', ctx.db.master ? 'Master CV saved' : 'Add your master CV', !!ctx.db.master], ['templates', 'Template: ' + templateById(ctx.prefs.template).name, true], ['settings', ctx.aiOn ? 'AI assistant ready' : 'AI assistant off', ctx.aiOn], ['jobs', ctx.services.apify ? 'LinkedIn search ready' : 'LinkedIn search needs a token', !!ctx.services.apify]].map(([p, t, ok]) => <a key={p} href={'#/' + p} className={ok ? 'ok' : ''}>{ok ? <CircleCheck/> : <Target/>}{t}</a>)}
         </div>
       </aside>
     </div>
